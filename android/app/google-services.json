@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "768482152606",
+    "project_id": "stories-9084d",
+    "storage_bucket": "stories-9084d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768482152606:android:98c93a7589e8a6031d2b8f",
+        "android_client_info": {
+          "package_name": "com.example.writers_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768482152606-d7oef5hie2g9cdj5g4ro4apuribq8g6i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.writers_app",
+            "certificate_hash": "ae564710b747230e43635f6a9a1a1d1e68458c07"
+          }
+        },
+        {
+          "client_id": "768482152606-agchqok1bjhq5foe1prt312vmf49queg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU3lIDdqC7UTumPHdHOd_8stW8LuBV36c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768482152606-agchqok1bjhq5foe1prt312vmf49queg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768482152606-di6alf5ov9ke72jh1hevb82fankntd4f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.writersApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

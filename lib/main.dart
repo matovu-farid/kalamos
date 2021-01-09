@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+//import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:toast/toast.dart';
@@ -7,23 +9,57 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:writers_app/model/model.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(ChangeNotifierProvider<WritersModel>(
       create: (_) => WritersModel(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+ 
+  Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Writers App'),
+    return FutureBuilder(
+      future: _initialization,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return SomethingWentWrong();
+        }
+        if(snapshot.connectionState == ConnectionState.done){
+          return TheApp();
+        // return LitAuthInit(
+        //   authProviders: AuthProviders(
+        //     emailAndPassword: true,
+        //     anonymous: true
+        //   ),
+        //       child: TheApp(),
+        // );
+      }
+      return Loading();
+      }
     );
   }
 }
+
+class TheApp extends StatelessWidget {
+  const TheApp({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+            theme: ThemeData(
+    primarySwatch: Colors.orange,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: MyHomePage(title: 'Writers App'),
+          );
+  }
+}
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -35,16 +71,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String get articleTitle => titleController.text;
-  String get articleBody => bodyController.text;
-  TextEditingController titleController;
   TextEditingController bodyController;
-  @override
-  void initState() {
-    super.initState();
-    titleController = TextEditingController();
-    bodyController = TextEditingController();
-  }
+  TextEditingController titleController;
 
   @override
   void dispose() {
@@ -54,10 +82,31 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    bodyController = TextEditingController();
+  }
+
+  String get articleTitle => titleController.text;
+
+  String get articleBody => bodyController.text;
+
+  FloatingActionButton buildShareButton() {
+    return FloatingActionButton(
+      child: Icon(Icons.share),
+      onPressed: () {
+        Share.share('\t\t ${titleController.text}\n\n ${bodyController.text}');
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final maxLines = 25;
+    //return LitAuth();
     return Scaffold(
       floatingActionButton: Container(
         width: width,
@@ -104,15 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
       )),
     );
   }
-
-  FloatingActionButton buildShareButton() {
-    return FloatingActionButton(
-      child: Icon(Icons.share),
-      onPressed: () {
-        Share.share('\t\t ${titleController.text}\n\n ${bodyController.text}');
-      },
-    );
-  }
 }
 
 class ArticleInput extends StatelessWidget {
@@ -123,9 +163,9 @@ class ArticleInput extends StatelessWidget {
       @required this.controller})
       : super(key: key);
 
-  final int maxLines;
-  final String labelText;
   final TextEditingController controller;
+  final String labelText;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -188,4 +228,21 @@ FloatingActionButton buildColorButton(
       FontAwesomeIcons.dashcube,
     ),
   );
+}
+
+class SomethingWentWrong extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home:Scaffold(body: Center(child: Text('Some thing went wrong'))),
+    );
+  }
+}
+class Loading extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home:Scaffold(body: Center(child: Text('Loading'))),
+    );
+  }
 }
