@@ -1,12 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'created_widgets/article/article_body.dart';
+import 'created_widgets/authenticated.dart';
+import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:lit_firebase_auth/lit_firebase_auth.dart';
+import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:writers_app/model/model.dart';
+
+import 'created_widgets/send.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,31 +19,23 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
- 
-  Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+ final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _initialization,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return SomethingWentWrong();
-        }
-        if(snapshot.connectionState == ConnectionState.done){
-          return TheApp();
-        // return LitAuthInit(
-        //   authProviders: AuthProviders(
-        //     emailAndPassword: true,
-        //     anonymous: true
-        //   ),
-        //       child: TheApp(),
-        // );
-      }
-      return Loading();
-      }
-    );
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return SomethingWentWrong();
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            //return TheApp();
+            return TheApp();
+          }
+          return Loading();
+        });
   }
 }
 
@@ -50,16 +46,22 @@ class TheApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-            theme: ThemeData(
-    primarySwatch: Colors.orange,
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-            home: MyHomePage(title: 'Writers App'),
-          );
+    return LitAuthInit(
+      authProviders: AuthProviders(google: true),
+      child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.orange,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        routes: {
+          '/':(_)=>MyHomePage(title: 'Writers App'),
+          '/body':(_)=>Body(maxLines: 1000,title: 'Writers App'),
+          '/send':(_)=>SendArticle(title: 'Writers App')
+        },
+      ),
+    );
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -71,119 +73,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController bodyController;
-  TextEditingController titleController;
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    bodyController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    titleController = TextEditingController();
-    bodyController = TextEditingController();
-  }
-
-  String get articleTitle => titleController.text;
-
-  String get articleBody => bodyController.text;
-
-  FloatingActionButton buildShareButton() {
-    return FloatingActionButton(
-      child: Icon(Icons.share),
-      onPressed: () {
-        Share.share('\t\t ${titleController.text}\n\n ${bodyController.text}');
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final maxLines = 25;
-    //return LitAuth();
+
     return Scaffold(
-      floatingActionButton: Container(
-        width: width,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildColorButton(context),
-            buildShareButton(),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        title: Center(child: Text(widget.title)),
-      ),
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Container(
+        appBar: AppBar(title: Text(widget.title)),
+        drawer: Drawer(
+            child: Column(
+                children: <Widget>[
+              AppBar(),
+              FlatButton(
+                shape: RoundedRectangleBorder(),
+                child: Text(
+                  'Sign out',
+                ),
+                onPressed: () {
+                  Provider.of<WritersModel>(context, listen: false).signout();
+                },
+              )
+            ])),
+        floatingActionButton: Container(
           width: width,
-          height: height,
-          child: Column(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Flexible(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: ArticleInput(
-                      maxLines: 2,
-                      labelText: 'Title',
-                      controller: titleController,
-                    ),
-                  )),
-              Flexible(
-                  flex: 8,
-                  child: ArticleInput(
-                    maxLines: maxLines,
-                    labelText: 'Body',
-                    controller: bodyController,
-                  )),
+              buildColorButton(context),
+
             ],
           ),
         ),
-      )),
-    );
-  }
-}
-
-class ArticleInput extends StatelessWidget {
-  const ArticleInput(
-      {Key key,
-      @required this.maxLines,
-      @required this.labelText,
-      @required this.controller})
-      : super(key: key);
-
-  final TextEditingController controller;
-  final String labelText;
-  final int maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<WritersModel>(builder: (context, model, child) {
-      return TextField(
-        controller: controller,
-        cursorColor: model.selectedColor,
-        style: TextStyle(color: model.selectedColor),
-        decoration: InputDecoration(
-            labelText: labelText,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-              Radius.circular(30),
-            ))),
-        keyboardType: TextInputType.multiline,
-        maxLines: maxLines,
-      );
-    });
+        body: LitAuthState(
+          authenticated: Authenticated(
+              width: width,
+              height: height,
+              maxLines: maxLines,
+            ),
+          unauthenticated: Unauthenticated(),
+        ));
   }
 }
 
@@ -234,15 +164,16 @@ class SomethingWentWrong extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:Scaffold(body: Center(child: Text('Some thing went wrong'))),
+      home: Scaffold(body: Center(child: Text('Some thing went wrong'))),
     );
   }
 }
-class Loading extends StatelessWidget{
+
+class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:Scaffold(body: Center(child: Text('Loading'))),
+      home: Scaffold(body: Center(child: Text('Loading'))),
     );
   }
 }

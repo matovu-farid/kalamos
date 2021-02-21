@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'article/article_title.dart';
+
+
 class Authenticated extends StatelessWidget {
   const Authenticated({
     Key key,
     @required this.width,
     @required this.height,
-    @required this.titleController,
     @required this.maxLines,
-    @required this.bodyController,
   }) : super(key: key);
 
   final double width;
   final double height;
-  final TextEditingController titleController;
   final int maxLines;
-  final TextEditingController bodyController;
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +24,46 @@ class Authenticated extends StatelessWidget {
         width: width,
         height: height,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: ArticleInput(
-                    maxLines: 2,
-                    labelText: 'Title',
-                    controller: titleController,
-                  ),
-                )),
-            Flexible(
-                flex: 8,
-                child: ArticleInput(
-                  maxLines: maxLines,
-                  labelText: 'Body',
-                  controller: bodyController,
-                )),
+            FlatButton(
+              minWidth: MediaQuery.of(context).size.width,
+                onPressed: (){
+                showDialog(context: context,
+                  builder: (_){
+                  return AlertDialog(
+                    title: Text('Enter a title'),
+                    content: ArticleTitle(),
+                    actions: [
+                      FlatButton(onPressed: () {
+                        Navigator.of(context).pushNamed('/body');
+                      },
+                      child: Text('Next')),
+                      FlatButton(
+                        child: Text('Cancel'),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                  }
+                );
+                },
+                color: Colors.purple,
+                child: Text('Write a new article',style: TextStyle(color: Colors.white),)
+            ),
+          FlatButton(onPressed: (){},
+              minWidth: MediaQuery.of(context).size.width,
+                color: Colors.purple,
+                child: Text('View saved articles',style: TextStyle(color: Colors.white),)
+            ),
+
           ],
         ),
       ),
     ));
   }
 }
+
+

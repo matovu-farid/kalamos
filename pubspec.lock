@@ -79,7 +79,7 @@ packages:
     source: hosted
     version: "0.18.4+1"
   firebase_auth_oauth:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_auth_oauth
       url: "https://pub.dartlang.org"
