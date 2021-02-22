@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:writers_app/color_button.dart';
 import 'package:writers_app/model/model.dart';
 import 'article.dart';
 
@@ -23,10 +24,17 @@ class Body extends StatelessWidget {
           ), onPressed: ()=>Navigator.of(context).pushNamed('/send'))
         ],
       ),
-      body: ArticleInput(
-        maxLines: maxLines,
-        labelText: 'Body',
-        controller: Provider.of<WritersModel>(context).bodyController,
+      body: Stack(
+        children: [
+          ArticleInput(
+            maxLines: maxLines,
+            labelText: 'Body',
+            controller: Provider.of<WritersModel>(context).bodyController,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+              child: ColorButton())
+        ],
       ),
     );
   }

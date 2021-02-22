@@ -1,4 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:writers_app/color_button.dart';
+import 'package:writers_app/created_widgets/view.dart';
 import 'created_widgets/article/article_body.dart';
 import 'created_widgets/authenticated.dart';
 import 'package:writers_app/created_widgets/unauthenticated.dart';
@@ -14,13 +17,14 @@ import 'created_widgets/send.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(ChangeNotifierProvider<WritersModel>(
       create: (_) => WritersModel(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
- final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +58,10 @@ class TheApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         routes: {
-          '/':(_)=>MyHomePage(title: 'Writers App'),
-          '/body':(_)=>Body(maxLines: 1000,title: 'Writers App'),
-          '/send':(_)=>SendArticle(title: 'Writers App')
+          '/': (_) => MyHomePage(title: 'Writers App'),
+          '/body': (_) => Body(maxLines: 1000, title: 'Writers App'),
+          '/send': (_) => SendArticle(title: 'Writers App'),
+          '/view':(_)=>ViewArticle(title: 'Writers App')
         },
       ),
     );
@@ -82,83 +87,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(title: Text(widget.title)),
         drawer: Drawer(
-            child: Column(
-                children: <Widget>[
-              AppBar(),
-              FlatButton(
-                shape: RoundedRectangleBorder(),
-                child: Text(
-                  'Sign out',
-                ),
-                onPressed: () {
-                  Provider.of<WritersModel>(context, listen: false).signout();
-                },
-              )
-            ])),
-        floatingActionButton: Container(
-          width: width,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildColorButton(context),
+            child: Column(children: <Widget>[
+          AppBar(),
+          FlatButton(
+            shape: RoundedRectangleBorder(),
+            child: Text(
+              'Sign out',
+            ),
+            onPressed: () {
+              Provider.of<WritersModel>(context, listen: false).signout();
+            },
+          )
+        ])),
 
-            ],
-          ),
-        ),
         body: LitAuthState(
           authenticated: Authenticated(
-              width: width,
-              height: height,
-              maxLines: maxLines,
-            ),
+            width: width,
+            height: height,
+            maxLines: maxLines,
+          ),
           unauthenticated: Unauthenticated(),
         ));
   }
 }
 
-FloatingActionButton buildColorButton(
-  BuildContext context,
-) {
-  return FloatingActionButton(
-    onPressed: () {
-      var pickerColor =
-          Provider.of<WritersModel>(context, listen: false).pickerColor;
-      var selectedColor =
-          Provider.of<WritersModel>(context, listen: false).selectedColor;
-      final changeColor =
-          Provider.of<WritersModel>(context, listen: false).changeColor;
-      showDialog(
-        context: context,
-        child: AlertDialog(
-          title: const Text('Pick a color!'),
-          content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: pickerColor,
-              onColorChanged: changeColor,
-              showLabel: true,
-              pickerAreaHeightPercent: 0.8,
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: const Text('Got it'),
-              onPressed: () {
-                selectedColor = pickerColor;
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-      Toast.show('Pick a color', context);
-    },
-    tooltip: 'choose color',
-    child: Icon(
-      FontAwesomeIcons.dashcube,
-    ),
-  );
-}
 
 class SomethingWentWrong extends StatelessWidget {
   @override

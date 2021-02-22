@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:writers_app/created_widgets/article/save_Article.dart';
 import 'package:writers_app/share.dart';
 
 class SendArticle extends StatelessWidget{
@@ -10,8 +11,10 @@ class SendArticle extends StatelessWidget{
   const SendArticle({Key key, this.title}) : super(key: key);
 
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text(title),),
         body: Center(
@@ -21,9 +24,12 @@ class SendArticle extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                ShareWidget(
-                 color: color,
-                 textColor: textColor,
-               )]),
+
+               ),
+                SaveArticle()
+
+              ]),
+
           ),
         )
         );
