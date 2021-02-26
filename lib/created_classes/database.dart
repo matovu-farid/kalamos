@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 class MyDatabase {
   static Database db;
 
-  Future createDb() async {
+  Future _createDb() async {
     String path = '${await getDatabasesPath()}article.db';
     db = await openDatabase(path, version: 1, onCreate: (db, version) {
       db.execute(
@@ -20,7 +20,7 @@ class MyDatabase {
 
 
   Future<int> saveArticle(FullArticle article) async {
-    await createDb();
+    await _createDb();
     int row = await db.rawInsert(
         'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
     list = await db.query('ArticleTable', columns: ['title','body']);
@@ -32,7 +32,7 @@ class MyDatabase {
   }
 
   Future<List<Map>> readAllData() async {
-    await createDb();
+    await _createDb();
     return await db.query('ArticleTable', columns: null);
     //return await db.rawQuery('SELECT * FROM ArticleTable');
   }

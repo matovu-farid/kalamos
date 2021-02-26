@@ -29,7 +29,7 @@ class Authenticated extends StatelessWidget {
         child: TabBarView(
           children: [
             WriteArticle(),
-            ViewArticles(),
+            ViewArticlesPage(),
 
 
           ],

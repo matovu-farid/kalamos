@@ -73,7 +73,7 @@ class ConstantMaterialApp extends StatelessWidget {
         '/': (_) => MyHomePage(title: 'Writers App'),
         '/body': (_) => WriteArticle(),
         '/send': (_) => SendArticle(),
-        '/view':(_)=>ViewArticles()
+        '/view':(_)=>ViewArticlesPage()
       },
     );
   }

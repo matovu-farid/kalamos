@@ -1,32 +1,54 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:writers_app/created_classes/database.dart';
 import 'dart:core';
-
-import 'package:writers_app/created_widgets/article/article_view.dart';
 
 
 
 class WritersModel with ChangeNotifier{
-  //List<MyListTile> listOfTiles = [];
   var _pickerColor = Colors.black;
   var _selectedColor = Colors.black;
   TextEditingController bodyController=TextEditingController();
   TextEditingController titleController=TextEditingController();
 
   MyDatabase db = MyDatabase();
-  //final List<Map> listOfArticles = [];
+   final fireStore = FirebaseFirestore.instance;
+   final auth = FirebaseAuth.instance;
 
-  // addToTileList(MyListTile tile){
-  //   listOfTiles.add(tile);
-  //   notifyListeners();
-  // }
-  List<Map> selectedBox ;
+  List<Map<String,String>> selectedBox ;
+  List<Map<String,String>> selectedArticles ;
+
+  _initializeSelectedArticles(){
+    selectedArticles = selectedBox.where((element) => element!=null).toList();
+  }
+   String get user=> auth.currentUser.uid;
+
+  //static int index = 0;
+  upLoad(){
+    selectedArticles=[];
+     final docRef= fireStore.collection(user).doc('articles');
+     _initializeSelectedArticles();
+     print(selectedArticles);
+     if(selectedArticles.isNotEmpty){
+       for(var article in selectedArticles ){
+         var title = article['title'];
+         var body  = article['body'];
+
+
+         docRef.set({title:body},SetOptions(merge: true));
+       }
+
+     }
+
+
+  }
+
+
 
   onChecked(int index,bool isChecked,List<Map<String,String>> list){
     if(selectedBox==null){
-      selectedBox=List<Map>(list.length);
+      selectedBox=List<Map<String,String>>(list.length);
 
     }
 
@@ -38,19 +60,15 @@ class WritersModel with ChangeNotifier{
 
       selectedBox[index] = null;
     }
-  print(selectedBox);
     notifyListeners();
   }
-
-
-
 
   changeColor(Color selectedColorGot){
     _selectedColor= selectedColorGot;
         notifyListeners();
   }
 
-   FirebaseAuth auth= FirebaseAuth.instance;
+   //FirebaseAuth auth= FirebaseAuth.instance;
   void signout(){
     Color color = Colors.white;
     auth.signOut();
