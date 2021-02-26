@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
+import 'package:flutter_expanded_tile/tileController.dart';
 import 'package:provider/provider.dart';
 import 'package:writers_app/created_widgets/sending_buttons/save_Article.dart';
 import 'package:writers_app/model/model.dart';
@@ -29,7 +31,14 @@ class Uploaded extends StatelessWidget{
             itemCount: articlesFetched.length,
               itemBuilder: (context,index){
 
-                return ListTile(title: Text(articlesFetched[index].title),);
+                return Card(
+                  child: ExpandedTile(
+                    title: Text(articlesFetched[index].title),
+                    content: Text(articlesFetched[index].body),
+                    controller: ExpandedTileController(),
+
+                  ),
+                );
 
               });
          return SizedBox(
