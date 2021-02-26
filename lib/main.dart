@@ -72,7 +72,7 @@ class ConstantMaterialApp extends StatelessWidget {
       routes: {
         '/': (_) => MyHomePage(title: 'Writers App'),
         '/body': (_) => WriteArticle(),
-        '/send': (_) => SendArticle(),
+        '/send': (_) => Uploaded(),
         '/view':(_)=>ViewArticlesPage()
       },
     );
@@ -99,11 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
           appBar: AppBar(title: Text(widget.title),bottom: TabBar(tabs: [
             Tab(child: Text('Write'),),
             Tab(child: Text('View'),),
+            Tab(child: Text('Uploaded'),),
           ]),
 
           ),

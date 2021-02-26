@@ -21,7 +21,6 @@ class SaveArticle extends StatelessWidget {
         FullArticle article = FullArticle(title, body);
         MyDatabase db= Provider.of<WritersModel>(context,listen: false).db;
         int row= await db.saveArticle(article);
-        print(row);
        //Navigator.of(context).pushNamed('/view');
 
 

@@ -30,6 +30,7 @@ class Authenticated extends StatelessWidget {
           children: [
             WriteArticle(),
             ViewArticlesPage(),
+            Uploaded()
 
 
           ],

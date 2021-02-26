@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
 import 'dart:core';
 
@@ -24,8 +27,29 @@ class WritersModel with ChangeNotifier{
   }
    String get user=> auth.currentUser.uid;
 
-  //static int index = 0;
-  upLoad(){
+  int index= 0;
+
+  List<FullArticle> articlesFetched = [];
+
+  fetchFromFirestore()async {
+    if(articlesFetched.isEmpty){
+    final docRef = fireStore.collection(user).doc('articles');
+    final documentSnapshot = await docRef.get();
+    var map = documentSnapshot.data();
+
+    final keys = map.keys.toList();
+    for (var key in keys) {
+      final articleMap = map[key];
+      final title = articleMap.keys.first.toString();
+      final body = articleMap.values.first.toString();
+      print(title);
+      print(body);
+      articlesFetched.add(FullArticle(title, body));
+    }
+  }
+  }
+
+  upLoad()async{
     selectedArticles=[];
      final docRef= fireStore.collection(user).doc('articles');
      _initializeSelectedArticles();
@@ -34,13 +58,12 @@ class WritersModel with ChangeNotifier{
        for(var article in selectedArticles ){
          var title = article['title'];
          var body  = article['body'];
-
-
-         docRef.set({title:body},SetOptions(merge: true));
+         await docRef.set({'$title$index':{title : body}},SetOptions(merge: true));
+         articlesFetched.add(FullArticle(title, body));
        }
-
      }
-
+      index++;
+     notifyListeners();
 
   }
 
