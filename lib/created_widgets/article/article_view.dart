@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
-//import 'package:flutter_expanded_tile/tileController.dart';
+import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
+import 'package:flutter_expanded_tile/tileController.dart';
 import 'package:writers_app/created_classes/database.dart';
 
 
@@ -12,12 +12,12 @@ class ViewArticles extends StatefulWidget {
 }
 
 class _ViewArticlesState extends State<ViewArticles> {
- //  ExpandedTileController _expandedController;
- // @override
- //  void initState() {
- //   _expandedController = ExpandedTileController();
- //    super.initState();
- //  }
+  ExpandedTileController _expandedController;
+ @override
+  void initState() {
+   _expandedController = ExpandedTileController();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     MyDatabase db = MyDatabase();
@@ -42,10 +42,10 @@ class _ViewArticlesState extends State<ViewArticles> {
                       .toList();
 
                   return Card(
-                    child: ListTile(
+                    child: ExpandedTile(
                       title: Text((typedList[index])['title']),
-                      // content: Text((typedList[index])['body']),
-                      // controller: _expandedController
+                       content: Text((typedList[index])['body']),
+                       controller: ExpandedTileController()
                     ),
                   );
                 });
