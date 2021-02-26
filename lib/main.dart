@@ -99,21 +99,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
           appBar: AppBar(title: Text(widget.title),bottom: TabBar(tabs: [
             Tab(child: Text('Write'),),
-            Tab(child: Text('Send'),),
             Tab(child: Text('View'),),
           ]),
 
           ),
           drawer: Drawer(
               child: Column(children: <Widget>[
-            AppBar(),
-            FlatButton(
-              shape: RoundedRectangleBorder(),
-              child: Text(
+                AppBar(),
+                FlatButton(
+                  shape: RoundedRectangleBorder(),
+                  child: Text(
                 'Sign out',
               ),
               onPressed: () {

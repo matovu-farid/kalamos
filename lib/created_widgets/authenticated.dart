@@ -29,7 +29,6 @@ class Authenticated extends StatelessWidget {
         child: TabBarView(
           children: [
             WriteArticle(),
-            SendArticle(),
             ViewArticles(),
 
 

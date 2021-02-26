@@ -7,15 +7,9 @@ class SendButton extends StatelessWidget {
   const SendButton({Key key, this.icon, this.label, this.onPressed}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      color: Colors.blueGrey,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,style: TextStyle(color:Colors.white70),),
-          Icon(icon,color: Colors.white70,),
-        ],
-      ),
+    return FloatingActionButton(
+
+      child:Icon(icon,color: Colors.white,),
 
       onPressed: onPressed,
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:flutter_expanded_tile/tileController.dart';
+import 'package:provider/provider.dart';
 import 'package:writers_app/created_classes/database.dart';
+import 'package:writers_app/model/model.dart';
 
 
 class ViewArticles extends StatefulWidget {
@@ -12,12 +14,8 @@ class ViewArticles extends StatefulWidget {
 }
 
 class _ViewArticlesState extends State<ViewArticles> {
-  ExpandedTileController _expandedController;
- @override
-  void initState() {
-   _expandedController = ExpandedTileController();
-    super.initState();
-  }
+  List<Widget> listOfTiles = [];
+
   @override
   Widget build(BuildContext context) {
     MyDatabase db = MyDatabase();
@@ -31,24 +29,22 @@ class _ViewArticlesState extends State<ViewArticles> {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data.isEmpty) return Scaffold(body: Container());
-            return ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  List<Map<String, String>> typedList = list
-                      .map((e) => {
-                            'title': e['title'].toString(),
-                            'body': e['body'].toString()
-                          })
-                      .toList();
+            List<Map<String, String>> typedList = list
+                .map((e) => {
+              'title': e['title'].toString(),
+              'body': e['body'].toString()
+            })
+                .toList();
+            for (var i =0; i < typedList.length-1;i++) {
+              int index =i;
+              listOfTiles.add(MyListTile(typedList: typedList, index: index));}
+            return ListView(
+              children: [
+                ...listOfTiles
 
-                  return Card(
-                    child: ExpandedTile(
-                      title: Text((typedList[index])['title']),
-                       content: Text((typedList[index])['body']),
-                       controller: ExpandedTileController()
-                    ),
-                  );
-                });
+              ],
+            );
+
           }
           return Center(
             child: Padding(
@@ -60,5 +56,38 @@ class _ViewArticlesState extends State<ViewArticles> {
             ),
           );
         });
+  }
+}
+
+class MyListTile extends StatefulWidget {
+   MyListTile({
+    Key key,
+    @required this.typedList,@required this.index
+  }) : super(key: key);
+
+  final List<Map<String, String>> typedList;
+  final int index;
+
+  @override
+  _MyListTileState createState() => _MyListTileState();
+}
+
+class _MyListTileState extends State<MyListTile> {
+  bool checkable = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ExpandedTile(
+        checkable: true,
+        onChecked: (isChecked){
+          Provider.of<WritersModel>(context,listen: false).onChecked(widget.index, isChecked,widget.typedList);
+
+        },
+        title: Text((widget.typedList[widget.index])['title']),
+         content: Text((widget.typedList[widget.index])['body']),
+         controller: ExpandedTileController()
+      ),
+    );
   }
 }
