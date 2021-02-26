@@ -1,18 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:writers_app/color_button.dart';
-import 'package:writers_app/created_widgets/view.dart';
 import 'created_widgets/article/article_body.dart';
+import 'created_widgets/article/article_view.dart';
 import 'created_widgets/authenticated.dart';
 import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:toast/toast.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:writers_app/model/model.dart';
-
 import 'created_widgets/send.dart';
 
 void main() {
@@ -35,8 +29,7 @@ class MyApp extends StatelessWidget {
             return SomethingWentWrong();
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            //return TheApp();
-            return TheApp();
+                       return TheApp();
           }
           return Loading();
         });
@@ -52,18 +45,36 @@ class TheApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return LitAuthInit(
       authProviders: AuthProviders(google: true),
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.orange,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        routes: {
-          '/': (_) => MyHomePage(title: 'Writers App'),
-          '/body': (_) => Body(maxLines: 1000, title: 'Writers App'),
-          '/send': (_) => SendArticle(title: 'Writers App'),
-          '/view':(_)=>ViewArticle(title: 'Writers App')
-        },
+      child: LayoutBuilder(
+
+        builder: (context, constraints) {
+          //if(constraints.maxHeight>900) return RotatedBox(quarterTurns: 1,child: ConstantMaterialApp());
+          //else
+            return ConstantMaterialApp();
+        }
       ),
+    );
+  }
+}
+
+class ConstantMaterialApp extends StatelessWidget {
+  const ConstantMaterialApp({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+            theme: ThemeData(
+        primarySwatch: Colors.orange,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      routes: {
+        '/': (_) => MyHomePage(title: 'Writers App'),
+        '/body': (_) => WriteArticle(),
+        '/send': (_) => SendArticle(),
+        '/view':(_)=>ViewArticles()
+      },
     );
   }
 }
@@ -83,31 +94,43 @@ class _MyHomePageState extends State<MyHomePage> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final maxLines = 25;
+    // print('width : $width');
+    // print('height : $height');
 
-    return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
-        drawer: Drawer(
-            child: Column(children: <Widget>[
-          AppBar(),
-          FlatButton(
-            shape: RoundedRectangleBorder(),
-            child: Text(
-              'Sign out',
-            ),
-            onPressed: () {
-              Provider.of<WritersModel>(context, listen: false).signout();
-            },
-          )
-        ])),
 
-        body: LitAuthState(
-          authenticated: Authenticated(
-            width: width,
-            height: height,
-            maxLines: maxLines,
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+          appBar: AppBar(title: Text(widget.title),bottom: TabBar(tabs: [
+            Tab(child: Text('Write'),),
+            Tab(child: Text('Send'),),
+            Tab(child: Text('View'),),
+          ]),
+
           ),
-          unauthenticated: Unauthenticated(),
-        ));
+          drawer: Drawer(
+              child: Column(children: <Widget>[
+            AppBar(),
+            FlatButton(
+              shape: RoundedRectangleBorder(),
+              child: Text(
+                'Sign out',
+              ),
+              onPressed: () {
+                Provider.of<WritersModel>(context, listen: false).signout();
+              },
+            )
+          ])),
+
+          body: LitAuthState(
+            authenticated: Authenticated(
+              width: width,
+              height: height,
+              maxLines: maxLines,
+            ),
+            unauthenticated: Unauthenticated(),
+          )),
+    );
   }
 }
 
@@ -125,7 +148,7 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(body: Center(child: Text('Loading'))),
+      home: Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
 }

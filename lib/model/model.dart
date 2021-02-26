@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:writers_app/created_classes/database.dart';
-import 'package:sqflite/sqflite.dart';
-
 import 'dart:core';
-
-import 'package:writers_app/created_classes/FullArticle.dart';
 
 
 
@@ -17,11 +13,13 @@ class WritersModel with ChangeNotifier{
   TextEditingController titleController=TextEditingController();
 
   MyDatabase db = MyDatabase();
+  final List<Map> listOfArticles = [];
+
+  // addToList(){
+  //   listOfArticles.add(value)
+  // }
 
 
-
-
-  WritersModel();
   changeColor(Color selectedColorGot){
     _selectedColor= selectedColorGot;
         notifyListeners();

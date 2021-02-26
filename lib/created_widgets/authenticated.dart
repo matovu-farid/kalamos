@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:writers_app/created_widgets/send.dart';
 
+import 'article/article_body.dart';
 import 'article/article_title.dart';
+import 'article/article_view.dart';
 
 
 class Authenticated extends StatelessWidget {
@@ -23,44 +26,15 @@ class Authenticated extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: TabBarView(
           children: [
-            FlatButton(
-              minWidth: MediaQuery.of(context).size.width,
-                onPressed: (){
-                showDialog(context: context,
-                  builder: (_){
-                  return AlertDialog(
-                    title: Text('Enter a title'),
-                    content: ArticleTitle(),
-                    actions: [
-                      FlatButton(onPressed: () {
-                        Navigator.of(context).pushNamed('/body');
-                      },
-                      child: Text('Next')),
-                      FlatButton(
-                        child: Text('Cancel'),
-                        onPressed: (){
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                  }
-                );
-                },
-                color: Colors.purple,
-                child: Text('Write a new article',style: TextStyle(color: Colors.white),)
-            ),
-          FlatButton(onPressed: (){},
-              minWidth: MediaQuery.of(context).size.width,
-                color: Colors.purple,
-                child: Text('View saved articles',style: TextStyle(color: Colors.white),)
-            ),
+            WriteArticle(),
+            SendArticle(),
+            ViewArticles(),
+
 
           ],
-        ),
+        )
       ),
     ));
   }

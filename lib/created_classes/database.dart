@@ -2,37 +2,38 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MyDatabase{
-  Database db;
-  Future createDb()async{
+class MyDatabase {
+  static Database db;
+
+  Future createDb() async {
     String path = '${await getDatabasesPath()}article.db';
-    db = await openDatabase(path,version: 1,onCreate: (db,version){
-      db.execute('CREATE TABLE ArticleTable (id INTEGER PRIMARY KEY, title TEXT, body TEXT)');
+    db = await openDatabase(path, version: 1, onCreate: (db, version) {
+      db.execute(
+          'CREATE TABLE ArticleTable (id INTEGER PRIMARY KEY, title TEXT, body TEXT)');
     });
   }
 
-  Future<int> saveArticle(FullArticle article)async{
+  //get dataBase =>db;
 
+  List<Map> list = [];
+
+
+
+  Future<int> saveArticle(FullArticle article) async {
     await createDb();
-
-      String databasePath = await getDatabasesPath();
-
-      // var path = '$databasePath article.db';
-      // Database db = await openDatabase(path, version: 1, onCreate: (db, version) {
-      //   db.execute(
-      //       'CREATE TABLE ArticleTable (id INTEGER PRIMARY KEY, title TEXT, body TEXT)');
-      // });
-
-      return await db.rawInsert(
-          'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
-
+    int row = await db.rawInsert(
+        'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
+    list = await db.query('ArticleTable', columns: ['title','body']);
+    return row;
     print('saved');
-
+  }
+  Future<void> initializeList()async{
+    list = await db.query('ArticleTable', columns: ['title','body']);
   }
 
-  Future<List<Map<String,String>>> readAllData()async{
+  Future<List<Map>> readAllData() async {
     await createDb();
-    return await db.query('ArticleTable');
+    return await db.query('ArticleTable', columns: null);
     //return await db.rawQuery('SELECT * FROM ArticleTable');
   }
 }

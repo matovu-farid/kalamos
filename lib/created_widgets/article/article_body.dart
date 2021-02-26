@@ -4,36 +4,28 @@ import 'package:writers_app/color_button.dart';
 import 'package:writers_app/model/model.dart';
 import 'article.dart';
 
-class Body extends StatelessWidget {
-  const Body({
+class WriteArticle extends StatelessWidget {
+  const WriteArticle({
     Key key,
-    @required this.maxLines, this.title,
+
   }) : super(key: key);
 
-  final int maxLines;
-  final String title;
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(icon: Icon(
-            Icons.arrow_forward
-          ), onPressed: ()=>Navigator.of(context).pushNamed('/send'))
-        ],
-      ),
-      body: Stack(
+    return SizedBox.expand(
+      child: Column(
         children: [
-          ArticleInput(
-            maxLines: maxLines,
-            labelText: 'Body',
-            controller: Provider.of<WritersModel>(context).bodyController,
+          ArticleInput(maxLines: 1, labelText: 'title',
+              controller: Provider.of<WritersModel>(context).titleController),
+          Flexible(
+            child: ArticleInput(
+              maxLines: 100000,
+              labelText: 'Body',
+              controller: Provider.of<WritersModel>(context).bodyController,
+            ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-              child: ColorButton())
         ],
       ),
     );
