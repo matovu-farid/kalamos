@@ -1,5 +1,8 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:writers_app/created_classes/writer_profile.dart';
 import 'saving_methods.dart';
 import 'dart:core';
@@ -10,6 +13,21 @@ class WritersModel with ChangeNotifier,SavingMethods{
   Profile profile;
 
   TextEditingController nameController;
+  File image;
+  final _picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+
+
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+      notifyListeners();
+
+  }
 
 
 
@@ -20,7 +38,7 @@ initializeName(){
    if(nameController==null) {
      nameController = TextEditingController();
      nameController.text = userName;
-     notifyListeners();
+     //notifyListeners();
    }
 
 }

@@ -21,6 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  avatar_glow: ^1.2.0
+  circular_profile_avatar: ^1.0.8
+  image_picker: ^0.6.7+22
   cloud_firestore: any
   flutter_expanded_tile: ^0.2.1
   permission_handler: ^5.1.0+2

@@ -1,28 +1,68 @@
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:writers_app/created_classes/writer_profile.dart';
 import 'package:writers_app/created_widgets/article/article.dart';
 import 'package:writers_app/model/model.dart';
-class ProfilePage extends StatelessWidget {
 
+class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-     WritersModel model= Provider.of<WritersModel>(context);
+    WritersModel model = Provider.of<WritersModel>(context);
     model.initializeName();
     return Scaffold(
-      appBar: AppBar(),
+        appBar: AppBar(),
         body: Center(
-          child:ListView(
-            children: [
-              Container(
-                height: 180,
-                child: Placeholder(
+            child: ListView(
+          children: [
+            Consumer<WritersModel>(
+              builder: (_, model, child) {
+                if (model.image != null) {
+                  return GestureDetector(
+                    child: AvatarGlow(
+                      endRadius: 120,
+                      glowColor: Colors.blueGrey,
+                      child: Material(
+                        elevation: 8.0,
 
-                ),
-              ),
-              ArticleInput(maxLines: 1, labelText: 'Name', controller: model.nameController)
-            ],
-          )
-        ));
+                        shape: CircleBorder(),
+                        child: CircularProfileAvatar('',
+                            borderWidth: 5,
+                            elevation: 2,
+                          radius: 100,
+                          child: Image.file(model.image)
+
+                        ),
+                      ),
+                    ),
+                    onTap: () async{
+                      await model.getImage();
+                    },
+                  );
+                } else
+                  return GestureDetector(
+                    onTap: ()async{
+                      await model.getImage();
+                    },
+                    child: Container(
+                      height: 180,
+                      width: 180,
+                      color: Colors.grey,
+
+                    ),
+                  );
+              },
+
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ArticleInput(
+                  maxLines: 1,
+                  labelText: 'Name',
+                  controller: model.nameController),
+            )
+          ],
+        )));
   }
 }
