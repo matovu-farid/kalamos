@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:writers_app/my_drawer.dart';
 import 'created_widgets/article/article_body.dart';
 import 'created_widgets/article/article_view.dart';
 import 'created_widgets/authenticated.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:writers_app/model/model.dart';
+import 'created_widgets/ProfileWidgets/ProfilePage.dart';
 import 'created_widgets/send.dart';
 
 void main() {
@@ -19,7 +21,6 @@ void main() {
 class MyApp extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
             return SomethingWentWrong();
           }
           if (snapshot.connectionState == ConnectionState.done) {
-                       return TheApp();
+            return TheApp();
           }
           return Loading();
         });
@@ -45,14 +46,11 @@ class TheApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return LitAuthInit(
       authProviders: AuthProviders(google: true),
-      child: LayoutBuilder(
-
-        builder: (context, constraints) {
-          //if(constraints.maxHeight>900) return RotatedBox(quarterTurns: 1,child: ConstantMaterialApp());
-          //else
-            return ConstantMaterialApp();
-        }
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        //if(constraints.maxHeight>900) return RotatedBox(quarterTurns: 1,child: ConstantMaterialApp());
+        //else
+        return ConstantMaterialApp();
+      }),
     );
   }
 }
@@ -65,15 +63,13 @@ class ConstantMaterialApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-            theme: ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
         '/': (_) => MyHomePage(title: 'Writers App'),
-        '/body': (_) => WriteArticle(),
-        '/send': (_) => Uploaded(),
-        '/view':(_)=>ViewArticlesPage()
+        '/Profile': (_) => ProfilePage(),
       },
     );
   }
@@ -97,31 +93,25 @@ class _MyHomePageState extends State<MyHomePage> {
     // print('width : $width');
     // print('height : $height');
 
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-          appBar: AppBar(title: Text(widget.title),bottom: TabBar(tabs: [
-            Tab(child: Text('Write'),),
-            Tab(child: Text('View'),),
-            Tab(child: Text('Uploaded'),),
-          ]),
-
-          ),
-          drawer: Drawer(
-              child: Column(children: <Widget>[
-                AppBar(),
-                FlatButton(
-                  shape: RoundedRectangleBorder(),
-                  child: Text(
-                'Sign out',
+          appBar: AppBar(
+            title: Text(widget.title),
+            bottom: TabBar(tabs: [
+              Tab(
+                child: Text('Write'),
               ),
-              onPressed: () {
-                Provider.of<WritersModel>(context, listen: false).signout();
-              },
-            )
-          ])),
-
+              Tab(
+                child: Text('View'),
+              ),
+              Tab(
+                child: Text('Uploaded'),
+              ),
+              // Tab(child:Text('Profile'))
+            ]),
+          ),
+          drawer: MyDrawer(),
           body: LitAuthState(
             authenticated: Authenticated(
               width: width,
@@ -133,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
 
 class SomethingWentWrong extends StatelessWidget {
   @override
