@@ -2,6 +2,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +19,7 @@ class WritersModel with ChangeNotifier,SavingMethods{
   TextEditingController nameController;
   File image;
   final _picker = ImagePicker();
+
 
   Future getImage() async {
     final pickedFile = await _picker.getImage(source: ImageSource.gallery);
@@ -56,9 +59,6 @@ class WritersModel with ChangeNotifier,SavingMethods{
       minHeight: 300
       //rotate: 180,
     );
-
-
-
     return result;
   }
 

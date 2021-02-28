@@ -1,6 +1,9 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
@@ -19,6 +22,32 @@ mixin SavingMethods{
 
 
   List<FullArticle> articlesFetched = [];
+
+  Future<void> saveImage(File image, DocumentReference ref) async {
+
+      String imageURL = await uploadFile(image);
+      profilePicRef.update({"images": FieldValue.arrayUnion([imageURL])});
+
+  }
+  DocumentReference get profilePicRef=>fireStore.collection(user).doc('profile_pic');
+
+
+  Future<String> uploadFile(File _image) async {
+    //final docRef = fireStore.collection(user).doc('profile_pic');
+
+    final storageReference = FirebaseStorage.instance
+        .ref()
+        .child('profile/${_image.path}');
+
+    final uploadTask =await storageReference.putFile(_image);
+
+    print('File Uploaded');
+    String returnURL;
+    await storageReference.getDownloadURL().then((fileURL) {
+      returnURL =  fileURL;
+    });
+    return returnURL;
+  }
 
   _initializeSelectedArticles(){
     selectedArticles = selectedBox.where((element) => element!=null).toList();
