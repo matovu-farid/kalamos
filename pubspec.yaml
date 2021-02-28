@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_image_compress: ^0.7.0
   avatar_glow: ^1.2.0
   circular_profile_avatar: ^1.0.8
   image_picker: ^0.6.7+22

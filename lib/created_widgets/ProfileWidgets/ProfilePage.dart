@@ -45,11 +45,15 @@ class ProfilePage extends StatelessWidget {
                     onTap: ()async{
                       await model.getImage();
                     },
-                    child: Container(
-                      height: 180,
-                      width: 180,
-                      color: Colors.grey,
+                    child: CircularProfileAvatar('',
+                      backgroundColor: Colors.grey,
+                      radius: 100,
+                      child: Container(
+                        height: 120,
+                        width: 120,
+                        color: Colors.grey,
 
+                      ),
                     ),
                   );
               },
