@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,22 +24,45 @@ mixin SavingMethods{
 
   List<FullArticle> articlesFetched = [];
 
-  Future<void> saveImage(File image, DocumentReference ref) async {
+  Future<void> upLoadPicAndSaveUrl(File image) async {
 
       String imageURL = await uploadFile(image);
-      profilePicRef.update({"images": FieldValue.arrayUnion([imageURL])});
+      DocumentSnapshot docSnapShot =await profilePicRef.get();
+      if(!docSnapShot.exists) profilePicRef.set({"profile": imageURL});
+
+     else  profilePicRef.update({"profile": imageURL});
 
   }
   DocumentReference get profilePicRef=>fireStore.collection(user).doc('profile_pic');
 
 
+
+
+
   Future<String> uploadFile(File _image) async {
     //final docRef = fireStore.collection(user).doc('profile_pic');
+    //await FirebaseStorage.instance.ref().delete();
 
-    final storageReference = FirebaseStorage.instance
-        .ref()
+    ///////////////////////////////////
+    //final oldstorageReference = FirebaseStorage.instance.ref();
+    try {
+      //oldstorageReference.child('profile').storage.;
+      final downloadurlMap = await fireStore.collection(user).doc('profile_pic').get();
+      final String downloadurl = downloadurlMap['profile'].toString();
+
+      String fileUrl =Uri.decodeFull(downloadurl).replaceAll(RegExp(r'(\?alt).*'), '');
+      final photoRef =  FirebaseStorage.instance.refFromURL(fileUrl);
+      photoRef.delete();
+
+
+    }catch(e){
+      _error;
+      print('Delete of old pics failed \n error : $e');
+      _error;
+    }
+     final storageReference =FirebaseStorage.instance.ref()
         .child('profile/${_image.path}');
-
+    //////////////////////////////////
     final uploadTask =await storageReference.putFile(_image);
 
     print('File Uploaded');
@@ -46,7 +70,15 @@ mixin SavingMethods{
     await storageReference.getDownloadURL().then((fileURL) {
       returnURL =  fileURL;
     });
+    _error;
+    print('URL got');
+    _error;
+
     return returnURL;
+
+  }
+  get _error{
+    print('____________________________________________');
   }
 
   _initializeSelectedArticles(){

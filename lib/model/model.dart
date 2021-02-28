@@ -21,7 +21,7 @@ class WritersModel with ChangeNotifier,SavingMethods{
   final _picker = ImagePicker();
 
 
-  Future getImage() async {
+  Future setProfilePic() async {
     final pickedFile = await _picker.getImage(source: ImageSource.gallery);
 
 
@@ -29,9 +29,15 @@ class WritersModel with ChangeNotifier,SavingMethods{
         try{
           image = await testCompressAndGetFile(File(pickedFile.path), '${pickedFile.path}001.jpeg');
 
+
         }
         catch(e){
          print('changing pic failed\n error : $e');
+    }
+    try{
+      await upLoadPicAndSaveUrl(image);
+    }catch(e){
+          print('Image was not uploaded \n error : $e');
     }
         //image = File(pickedFile.path);
       } else {

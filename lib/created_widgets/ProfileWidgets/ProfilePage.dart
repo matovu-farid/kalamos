@@ -37,13 +37,13 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () async{
-                      await model.getImage();
+                      await model.setProfilePic();
                     },
                   );
                 } else
                   return GestureDetector(
                     onTap: ()async{
-                      await model.getImage();
+                      await model.setProfilePic();
                     },
                     child: CircularProfileAvatar('',
                       backgroundColor: Colors.grey,
