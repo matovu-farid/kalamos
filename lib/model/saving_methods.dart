@@ -40,19 +40,9 @@ mixin SavingMethods{
 
 
   Future<String> uploadFile(File _image) async {
-    //final docRef = fireStore.collection(user).doc('profile_pic');
-    //await FirebaseStorage.instance.ref().delete();
 
-    ///////////////////////////////////
-    //final oldstorageReference = FirebaseStorage.instance.ref();
     try {
-      //oldstorageReference.child('profile').storage.;
-      final downloadurlMap = await fireStore.collection(user).doc('profile_pic').get();
-      final String downloadurl = downloadurlMap['profile'].toString();
-
-      String fileUrl =Uri.decodeFull(downloadurl).replaceAll(RegExp(r'(\?alt).*'), '');
-      final photoRef =  FirebaseStorage.instance.refFromURL(fileUrl);
-      photoRef.delete();
+      await deleteFromStorage();
 
 
     }catch(e){
@@ -119,6 +109,14 @@ mixin SavingMethods{
     }
 
   }
+  Future deleteFromStorage() async {
+    final downloadurlMap = await fireStore.collection(user).doc('profile_pic').get();
+    final String downloadurl = downloadurlMap['profile'].toString();
 
+    String fileUrl =Uri.decodeFull(downloadurl).replaceAll(RegExp(r'(\?alt).*'), '');
+    final photoRef =  FirebaseStorage.instance.refFromURL(fileUrl);
+    photoRef.delete();
+  }
 
 }
+
