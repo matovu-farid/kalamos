@@ -23,13 +23,9 @@ class WritersModel with ChangeNotifier,SavingMethods{
 
   Future setProfilePic() async {
     final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-
-
       if (pickedFile != null) {
         try{
           image = await testCompressAndGetFile(File(pickedFile.path), '${pickedFile.path}001.jpeg');
-
-
         }
         catch(e){
          print('changing pic failed\n error : $e');

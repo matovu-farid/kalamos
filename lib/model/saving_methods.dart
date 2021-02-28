@@ -43,8 +43,6 @@ mixin SavingMethods{
 
     try {
       await deleteFromStorage();
-
-
     }catch(e){
       _error;
       print('Delete of old pics failed \n error : $e');
@@ -52,7 +50,7 @@ mixin SavingMethods{
     }
      final storageReference =FirebaseStorage.instance.ref()
         .child('profile/${_image.path}');
-    //////////////////////////////////
+
     final uploadTask =await storageReference.putFile(_image);
 
     print('File Uploaded');
@@ -103,8 +101,10 @@ mixin SavingMethods{
       for(var article in selectedArticles ){
         var title = article['title'];
         var body  = article['body'];
-        await docRef.set({'$title':{title : body}},SetOptions(merge: true));
-        articlesFetched.add(FullArticle(title, body));
+        final docSnapshot = await docRef.get();
+        if(docSnapshot.exists)await docRef.update({'$title':{title : body}});
+        else await docRef.set({'$title':{title : body}},SetOptions(merge: true));
+        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body));
       }
     }
 
