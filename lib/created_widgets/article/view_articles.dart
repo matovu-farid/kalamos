@@ -17,6 +17,8 @@ class ViewArticles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return FutureBuilder<List<Map>>(
         future: db.readAllData(),
         builder: (context, snapshot) {
@@ -67,16 +69,25 @@ class _MyListTileState extends State<MyListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ExpandedTile(
-          checkable: true,
-          onChecked: (isChecked) {
-            Provider.of<WritersModel>(context, listen: false)
-                .onChecked(widget.index, isChecked, widget.typedList);
-          },
-          title: Text((widget.typedList[widget.index])['title']),
-          content: Text((widget.typedList[widget.index])['body']),
-          controller: ExpandedTileController()),
+    final TabController tabController = DefaultTabController.of(context);
+     WritersModel model= Provider.of<WritersModel>(context);
+    return GestureDetector(
+      onDoubleTap: (){
+        model.titleController.text = (widget.typedList[widget.index])['title'];
+        model.bodyController.text = (widget.typedList[widget.index])['body'];
+        tabController.animateTo(0);
+      },
+      child: Card(
+        child: ExpandedTile(
+            checkable: true,
+            onChecked: (isChecked) {
+              Provider.of<WritersModel>(context, listen: false)
+                  .onChecked(widget.index, isChecked, widget.typedList);
+            },
+            title: Text((widget.typedList[widget.index])['title']),
+            content: Text((widget.typedList[widget.index])['body']),
+            controller: ExpandedTileController()),
+      ),
     );
   }
 }
