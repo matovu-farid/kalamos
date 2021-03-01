@@ -41,13 +41,7 @@ mixin SavingMethods{
 
   Future<String> uploadFile(File _image) async {
 
-    try {
-      await deleteFromStorage();
-    }catch(e){
-      _error;
-      print('Delete of old pics failed \n error : $e');
-      _error;
-    }
+    await deleteFromStorage();
      final storageReference =FirebaseStorage.instance.ref()
         .child('profile/${_image.path}');
 
@@ -115,7 +109,12 @@ mixin SavingMethods{
 
     String fileUrl =Uri.decodeFull(downloadurl).replaceAll(RegExp(r'(\?alt).*'), '');
     final photoRef =  FirebaseStorage.instance.refFromURL(fileUrl);
-    photoRef.delete();
+
+    try {
+      photoRef.delete();
+    } on Exception catch (e) {
+      print('Could not delete old pic');
+    }
   }
 
 }

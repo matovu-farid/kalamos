@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,8 +15,46 @@ class MyDatabase {
     });
   }
 
-  //get dataBase =>db;
+  Future _createDbForPic() async {
+    String path = '${await getDatabasesPath()}profile_pic.db';
+    db = await openDatabase(path, version: 1, onCreate: (db, version) {
+      db.execute(
+          'CREATE TABLE PictureTable (id INTEGER PRIMARY KEY, picture BLOB)');
+    });
+  }
 
+
+
+  savePicToDb(Uint8List imageFile)async{
+    await _createDbForPic();
+    try {
+      await db.rawInsert('INSERT INTO PictureTable(picture) VALUES("${imageFile}")');
+      // final listOfPics = await db.query('PictureTable', columns: ['picture']);
+      //  profilePic = listOfPics.last['picture'];
+    } on Exception catch (e) {
+      print('Failed to cache pic \n e');
+    }
+
+  }
+  var profilePic;
+  Future<void> retrievePicFromDataBase()async{
+    await _createDbForPic();
+    try {
+
+      List<Map<String,dynamic>> listOfPics =  await  db.query('PictureTable', columns: ['picture']);
+      var indexOfSecondLast = listOfPics.length-2;
+
+
+        await db.rawDelete('DELETE FROM PictureTable WHERE id = ${indexOfSecondLast}', );
+
+
+      print('$listOfPics');
+      if(listOfPics.isNotEmpty) profilePic = listOfPics.last['picture'];
+    } on Exception catch (e) {
+      print('Failed to retrieve pic from data base \n e');
+    }
+
+  }
   List<Map> list = [];
 
 

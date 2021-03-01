@@ -31,7 +31,7 @@ class WritersModel with ChangeNotifier,SavingMethods{
          print('changing pic failed\n error : $e');
     }
     try{
-      await upLoadPicAndSaveUrl(image);
+      upLoadPicAndSaveUrl(image);
     }catch(e){
           print('Image was not uploaded \n error : $e');
     }
@@ -39,9 +39,11 @@ class WritersModel with ChangeNotifier,SavingMethods{
       } else {
         print('No image selected.');
       }
+      db.savePicToDb(image.readAsBytesSync());
       notifyListeners();
 
   }
+
   Future<Uint8List> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
