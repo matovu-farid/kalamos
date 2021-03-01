@@ -22,6 +22,7 @@ class SaveArticle extends StatelessWidget {
         MyDatabase db= Provider.of<WritersModel>(context,listen: false).db;
         int row= await db.saveArticle(article);
        //Navigator.of(context).pushNamed('/view');
+        DefaultTabController.of(context).animateTo(1);
 
 
 

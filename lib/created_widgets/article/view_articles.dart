@@ -34,7 +34,7 @@ class ViewArticles extends StatelessWidget {
                       'body': e['body'].toString()
                     })
                 .toList();
-            for (var i = 0; i < typedList.length - 1; i++) {
+            for (var i = 0; i < typedList.length ; i++) {
               int index = i;
               listOfTiles.add(MyListTile(typedList: typedList, index: index));
             }

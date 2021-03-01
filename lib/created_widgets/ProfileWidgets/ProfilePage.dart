@@ -21,10 +21,7 @@ class ProfilePage extends StatelessWidget {
           .toList();
       print(listOfInts);
       Uint8List typedPic = Uint8List.fromList(listOfInts);
-      //typedPic = typedPic.buffer.asUint8List();
-
       profilePic = Image.memory(typedPic);
-      //model.image = File.fromRawPath(typedPic);
 
   }
 
