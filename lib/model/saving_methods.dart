@@ -78,6 +78,9 @@ mixin SavingMethods{
     selectedArticles=[];
     final docRef= fireStore.collection(user).doc('articles');
     initializeSelectedArticles();
+
+    fireStore.collection('users').doc('users').update({auth.currentUser.displayName:user});
+    //if(fireStore.collection(user).doc('articles'))
     if(selectedArticles.isNotEmpty){
       for(var article in selectedArticles ){
         var title = article.title;
