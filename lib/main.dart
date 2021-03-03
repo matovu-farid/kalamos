@@ -94,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // print('height : $height');
 
     return DefaultTabController(
+
       length: 3,
       child: Scaffold(
           appBar: AppBar(

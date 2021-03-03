@@ -48,6 +48,7 @@ class ViewButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
+      heroTag: 'View$text',
         onPressed: onPressed,
         label: Text(text));
   }

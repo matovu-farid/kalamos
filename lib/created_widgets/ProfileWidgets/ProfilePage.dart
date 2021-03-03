@@ -34,6 +34,7 @@ class ProfilePage extends StatelessWidget {
       //model.db.retrievePicFromDataBase().then((value) {model.image = File.fromRawPath(typedPic));};
 
     return Scaffold(
+
         appBar: AppBar(),
         body: Center(
             child: ListView(
@@ -48,6 +49,7 @@ class ProfilePage extends StatelessWidget {
                       endRadius: 120,
                       glowColor: Colors.blueGrey,
                       child: Material(
+
                         elevation: 8.0,
 
                         shape: CircleBorder(),
@@ -55,6 +57,7 @@ class ProfilePage extends StatelessWidget {
                             borderWidth: 5,
                             elevation: 2,
                             radius: 100,
+
                             child: profilePic
                                 ??Image.file(model.image)
 

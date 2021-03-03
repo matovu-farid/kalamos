@@ -37,6 +37,7 @@ class DrawerButton extends StatelessWidget {
     return Card(
       child: LayoutBuilder(builder: (context, constraints) {
         return FlatButton(
+          key: Key('$text'),
           minWidth: constraints.maxWidth,
           shape: RoundedRectangleBorder(),
           child: Text(

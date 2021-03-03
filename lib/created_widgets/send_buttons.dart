@@ -8,6 +8,7 @@ class SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      heroTag: 'send$label',
 
       child:Icon(icon,color: Colors.white,),
 

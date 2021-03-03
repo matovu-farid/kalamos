@@ -82,15 +82,7 @@ mixin SavingMethods{
          final body = mapGot[key];
          articlesFetched.add(FullArticle(title, body,id));
       }
-      // final mapGot= map[keys[0]];
 
-
-      // for (var key in keys) {
-      //   final articleMap = map[key];
-      //   final title = articleMap.keys.first.toString();
-      //   final body = articleMap.values.first.toString();
-      //   final id = int.parse(articleMap.values[1].toString());
-      // }
     }
   }
   initializeUploadArticles(){

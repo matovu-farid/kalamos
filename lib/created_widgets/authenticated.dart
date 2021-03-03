@@ -28,6 +28,7 @@ class Authenticated extends StatelessWidget {
         width: width,
         height: height,
         child: TabBarView(
+
           children: [
             WriteArticle(),
             ViewArticlesPage(),
