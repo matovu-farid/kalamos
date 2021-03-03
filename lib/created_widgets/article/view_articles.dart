@@ -39,9 +39,10 @@ class ViewArticles extends StatelessWidget {
                 .toList();
            // print(typedList);
              List<FullArticle> articleList= typedList.map((e) => FullArticle.fromMap(e)).toList();
-            for (var i = 0; i < typedList.length; i++) {
+            for (var i = 0; i < articleList.length; i++) {
               int index = i;
-              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,type:'local'));
+              final article = articleList[i];
+              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,type:'local',article: article,));
             }
             return ListView(
               children: [
@@ -64,7 +65,7 @@ class ViewArticles extends StatelessWidget {
 }
 
 class MyListTile extends StatefulWidget {
-  MyListTile({Key key, @required this.articleList, @required this.index, this.db, this.listOfTiles, @required this.type})
+  MyListTile({Key key, @required this.articleList, @required this.index, this.db, this.listOfTiles, @required this.type, @required this.article})
       : super(key: key);
 
   final List<FullArticle> articleList;
@@ -72,6 +73,7 @@ class MyListTile extends StatefulWidget {
   final MyDatabase db;
   final List<Widget> listOfTiles;
   final String type;
+  final FullArticle article;
 
 
   @override
@@ -132,19 +134,19 @@ class _MyListTileState extends State<MyListTile> {
             caption: 'Delete',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: () async {
-              widget.listOfTiles.removeAt(widget.index);
+            onTap: ()  {
+             // widget.listOfTiles.removeAt(widget.index);
               if(widget.type=='local') {
+                Provider.of<WritersModel>(context,listen: false).deleteSingle(widget.article);
 
-                await widget.db.deleteArticleLocally(
-                    widget.articleList[widget.index]);
               }else{
+                widget.articleList.removeAt(widget.index);
                 final model = Provider.of<WritersModel>(context,listen: false);
-                final articlesFetched =  model.articlesFetched;
 
-                model.deleteArticleFromCloud(articlesFetched[widget.index]);
-                //articlesFetched.removeAt(widget.index);
-                widget.listOfTiles.removeAt(widget.index);
+
+                model.deleteArticleFromCloud(widget.article);
+
+                //widget.listOfTiles.removeAt(widget.index);
               }
 
 
@@ -157,7 +159,7 @@ class _MyListTileState extends State<MyListTile> {
         ],
         child: MyCard(
           selected: selected,
-            title: widget.articleList[widget.index].title,body: widget.articleList[widget.index].body,controller:controller),
+            title: widget.article.title,body: widget.article.body,controller:controller),
 
       ),
     );

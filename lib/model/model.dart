@@ -16,6 +16,7 @@ import 'dart:core';
 
 class WritersModel with ChangeNotifier,SavingMethods{
   Profile profile;
+  List<Widget> listOfTiles = [];
 
   TextEditingController nameController;
   File image;
@@ -30,9 +31,9 @@ class WritersModel with ChangeNotifier,SavingMethods{
     }
     notifyListeners();
   }
-Future<void> deleteSingle(Map<String,String> map)async{
+Future<void> deleteSingle(FullArticle article)async{
 
-      FullArticle article  = FullArticle.fromMap(map);
+
      await db.deleteArticleLocally(article);
    // }
     notifyListeners();
