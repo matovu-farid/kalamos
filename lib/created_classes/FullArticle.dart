@@ -13,6 +13,19 @@ class FullArticle{
     return {title:body};
   }
 
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FullArticle &&
+          runtimeType == other.runtimeType &&
+          title == other.title &&
+          body == other.body &&
+          id == other.id;
+
+  @override
+  int get hashCode => title.hashCode ^ body.hashCode ^ id.hashCode;
+
   @override
   String toString() {
     return 'FullArticle{title: $title, body: $body, id: $id}';
