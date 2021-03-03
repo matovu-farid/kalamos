@@ -103,7 +103,7 @@ class _MyListTileState extends State<MyListTile> {
           selected =!selected;
           print(widget.index);
 
-          Provider.of<WritersModel>(context, listen: false).onChecked(widget.index, selected, widget.articleList,widget.type);
+          Provider.of<WritersModel>(context, listen: false).onLongPress(widget.index, selected, widget.articleList,widget.type);
 
         });
       },

@@ -2,10 +2,10 @@ class FullArticle{
 
   final String title;
   final String body;
-  static int count = 0;
+   int index ;
    final int id;
 
-  FullArticle(this.title, this.body,this.id);
+  FullArticle(this.title, this.body,this.id,{this.index=0});
   factory FullArticle.fromMap(Map map){
     return FullArticle(map['title'], map['body'], map['id']);
   }

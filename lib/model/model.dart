@@ -42,9 +42,14 @@ Future<void> deleteSingle(FullArticle article)async{
   List<FullArticle> cloudSelected = [];
 
   deleteMultipleFromCloud()async{
-    final selectedCloudArticles= cloudSelectedBox.where((element) => element!=null).toList();
-    for(var article in selectedCloudArticles){
-      await deleteArticleFromCloud(article);
+    if(articlesFetched!=null) {
+      final selectedCloudArticles = cloudSelectedBox.where((
+          element) => element != null).toList();
+      for (var article in selectedCloudArticles) {
+
+        await deleteArticleFromCloud(article);
+        articlesFetched.removeAt(article.index);
+      }
     }
     //notifyListeners();
   }
@@ -129,7 +134,7 @@ setName(String name){
 
   List<FullArticle> cloudSelectedBox;
 
-  onChecked(int index,bool isChecked,List<FullArticle> list,String type) {
+  onLongPress(int index,bool isChecked,List<FullArticle> list,String type) {
     if (type == 'local'){
       if (selectedBox == null) {
         selectedBox = List<FullArticle>(list.length);
