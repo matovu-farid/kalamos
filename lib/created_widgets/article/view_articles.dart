@@ -21,7 +21,7 @@ class ViewArticles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map>>(
-        future: db.readAllData(),
+        future: Provider.of<WritersModel>(context).db.readAllData(),
         builder: (context, snapshot) {
           List<Map> list = snapshot.data;
           listOfTiles = [];
@@ -41,7 +41,7 @@ class ViewArticles extends StatelessWidget {
              List<FullArticle> articleList= typedList.map((e) => FullArticle.fromMap(e)).toList();
             for (var i = 0; i < typedList.length; i++) {
               int index = i;
-              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db));
+              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,));
             }
             return ListView(
               children: [
@@ -64,12 +64,13 @@ class ViewArticles extends StatelessWidget {
 }
 
 class MyListTile extends StatefulWidget {
-  MyListTile({Key key, @required this.articleList, @required this.index,@required this.db})
+  MyListTile({Key key, @required this.articleList, @required this.index,@required this.db, @required this.listOfTiles})
       : super(key: key);
 
   final List<FullArticle> articleList;
   final int index;
   final MyDatabase db;
+  final List<Widget> listOfTiles;
 
   @override
   _MyListTileState createState() => _MyListTileState();
@@ -130,9 +131,14 @@ class _MyListTileState extends State<MyListTile> {
             icon: Icons.delete,
             onTap: () async {
 
-              //widget.typedList.removeAt(widget.index);
-              //await model.deleteSingle(widget.typedList[widget.index]);
-             await widget.db.deleteArticleLocally(widget.articleList[widget.index]);
+
+              widget.listOfTiles.removeAt(widget.index);
+                await widget.db.deleteArticleLocally(widget.articleList[widget.index]);
+
+
+
+
+
 
 
             },

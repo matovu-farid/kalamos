@@ -127,7 +127,7 @@ setName(String name){
 
       selectedBox[index] = null;
     }
-    notifyListeners();
+    //notifyListeners();
   }
 
   changeColor(Color selectedColorGot){

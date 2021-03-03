@@ -21,7 +21,7 @@ class SaveArticle extends StatelessWidget {
         FullArticle article = FullArticle(title, body,null);
         MyDatabase db= Provider.of<WritersModel>(context,listen: false).db;
         int index = await db.saveArticle(article);
-       //Navigator.of(context).pushNamed('/view');
+        FocusScope.of(context).requestFocus(new FocusNode());
         DefaultTabController.of(context).animateTo(1);
 
 

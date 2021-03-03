@@ -17,11 +17,13 @@ class ArticleInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<WritersModel>(builder: (context, model, child) {
+
       return TextField(
 
         controller: controller,
         cursorColor: model.selectedColor,
         style: TextStyle(color: model.selectedColor),
+        //autofocus: false,
         decoration: InputDecoration(
             labelText: labelText,
             border: OutlineInputBorder(
