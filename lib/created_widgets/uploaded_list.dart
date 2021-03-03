@@ -27,10 +27,10 @@ class UploadedList extends StatelessWidget {
             if (snapshot.hasError) return Text('Error got : ${snapshot.error}');
             if (snapshot.connectionState == ConnectionState.done){
               for (int i = 0; i < articlesFetched.length; i++) {
-                int index = i;
+
                 listOfTiles.add(MyListTile(
                     articleList: articlesFetched,
-                    index: index,
+                    index: i,
                     listOfTiles: listOfTiles,
                     type: 'cloud'));
               }

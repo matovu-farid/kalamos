@@ -139,8 +139,12 @@ class _MyListTileState extends State<MyListTile> {
                 await widget.db.deleteArticleLocally(
                     widget.articleList[widget.index]);
               }else{
-                Provider.of<WritersModel>(context,listen: false).articlesFetched.remove(widget.articleList[widget.index]);
-                Provider.of<WritersModel>(context,listen: false).deleteArticleFromCloud(widget.articleList[widget.index]);
+                final model = Provider.of<WritersModel>(context,listen: false);
+                final articlesFetched =  model.articlesFetched;
+
+                model.deleteArticleFromCloud(articlesFetched[widget.index]);
+                //articlesFetched.removeAt(widget.index);
+                widget.listOfTiles.removeAt(widget.index);
               }
 
 

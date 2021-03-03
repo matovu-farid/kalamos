@@ -102,7 +102,7 @@ mixin SavingMethods{
         var body  = article.body;
         var id = article.id;
         if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body,id));
-        DefaultTabController.of(context).animateTo(2);
+       // DefaultTabController.of(context).animateTo(2);
         final docSnapshot = await docRef.get();
         if(!docSnapshot.exists) await docRef.set({'$title':{title : body,'id':id},});
         else  await docRef.update({'$title':{title : body,'id':id},});
