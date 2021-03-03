@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:writers_app/created_widgets/article/bottom_send_buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:writers_app/created_widgets/article/view_articles.dart';
 import 'package:writers_app/created_classes/database.dart';
@@ -25,32 +26,11 @@ class _ViewArticlesPageState extends State<ViewArticlesPage> {
           width: MediaQuery.of(context).size.width,
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-              ViewButton(text:'Upload',onPressed:Provider.of<WritersModel>(context,listen: false).upLoadMultipleArticles),
-              ViewButton(text:'Delete',onPressed:Provider.of<WritersModel>(context,listen: false).delete),
-            ],),
+            child: BottomSendButtons(type:'local'),
           ),
         )
       ],
     );
-  }
-}
-
-class ViewButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  const ViewButton({
-    Key key, this.text, this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      heroTag: 'View$text',
-        onPressed: onPressed,
-        label: Text(text));
   }
 }
 

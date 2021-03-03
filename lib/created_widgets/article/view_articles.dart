@@ -41,7 +41,7 @@ class ViewArticles extends StatelessWidget {
              List<FullArticle> articleList= typedList.map((e) => FullArticle.fromMap(e)).toList();
             for (var i = 0; i < typedList.length; i++) {
               int index = i;
-              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,));
+              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,type:'local'));
             }
             return ListView(
               children: [
@@ -64,13 +64,15 @@ class ViewArticles extends StatelessWidget {
 }
 
 class MyListTile extends StatefulWidget {
-  MyListTile({Key key, @required this.articleList, @required this.index,@required this.db, @required this.listOfTiles})
+  MyListTile({Key key, @required this.articleList, @required this.index, this.db, this.listOfTiles, @required this.type})
       : super(key: key);
 
   final List<FullArticle> articleList;
   final int index;
   final MyDatabase db;
   final List<Widget> listOfTiles;
+  final String type;
+
 
   @override
   _MyListTileState createState() => _MyListTileState();
@@ -97,8 +99,9 @@ class _MyListTileState extends State<MyListTile> {
       onLongPress: (){
         setState(() {
           selected =!selected;
-                            Provider.of<WritersModel>(context, listen: false)
-                                .onChecked(widget.index, selected, widget.articleList);
+          print(widget.index);
+
+          Provider.of<WritersModel>(context, listen: false).onChecked(widget.index, selected, widget.articleList,widget.type);
 
         });
       },
@@ -130,11 +133,15 @@ class _MyListTileState extends State<MyListTile> {
             color: Colors.red,
             icon: Icons.delete,
             onTap: () async {
-
-
               widget.listOfTiles.removeAt(widget.index);
-                await widget.db.deleteArticleLocally(widget.articleList[widget.index]);
+              if(widget.type=='local') {
 
+                await widget.db.deleteArticleLocally(
+                    widget.articleList[widget.index]);
+              }else{
+                Provider.of<WritersModel>(context,listen: false).articlesFetched.remove(widget.articleList[widget.index]);
+                Provider.of<WritersModel>(context,listen: false).deleteArticleFromCloud(widget.articleList[widget.index]);
+              }
 
 
 

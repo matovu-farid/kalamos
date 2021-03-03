@@ -12,6 +12,7 @@ import 'package:writers_app/created_classes/database.dart';
 mixin SavingMethods{
   TextEditingController bodyController=TextEditingController();
   TextEditingController titleController=TextEditingController();
+  List<Widget> listOfUpLoadedTiles=[];
 
   MyDatabase db = MyDatabase();
   final fireStore = FirebaseFirestore.instance;
@@ -81,7 +82,9 @@ mixin SavingMethods{
          final title = key;
          final body = mapGot[key];
          articlesFetched.add(FullArticle(title, body,id));
+
       }
+
 
     }
   }
@@ -89,7 +92,7 @@ mixin SavingMethods{
 
   }
 
-  upLoadMultipleArticles()async{
+  Future upLoadMultipleArticles(BuildContext context)async{
     selectedArticles=[];
     final docRef= fireStore.collection(user).doc('articles');
     initializeSelectedArticles();
@@ -98,19 +101,15 @@ mixin SavingMethods{
         var title = article.title;
         var body  = article.body;
         var id = article.id;
-        print(article);
+        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body,id));
+        DefaultTabController.of(context).animateTo(2);
         final docSnapshot = await docRef.get();
         if(!docSnapshot.exists) await docRef.set({'$title':{title : body,'id':id},});
         else  await docRef.update({'$title':{title : body,'id':id},});
-          //await docRef.update({'id':id});
-       // }//'id':id.toString()
-       // else {
 
-         // await docRef.set({'id':id},SetOptions(merge: true));
-       // }
-        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body,id));
       }
     }
+
 
   }
 
@@ -128,6 +127,7 @@ mixin SavingMethods{
     }
 
   }
+
 
 }
 

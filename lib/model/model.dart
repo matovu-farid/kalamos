@@ -21,7 +21,7 @@ class WritersModel with ChangeNotifier,SavingMethods{
   File image;
   final _picker = ImagePicker();
 
-  Future<void> delete()async{
+  Future<void> deleteFromCache()async{
     selectedArticles=[];
     initializeSelectedArticles();
     for(var article in selectedArticles){
@@ -31,14 +31,30 @@ class WritersModel with ChangeNotifier,SavingMethods{
     notifyListeners();
   }
 Future<void> deleteSingle(Map<String,String> map)async{
-    // selectedArticles=[];
-    //initializeSelectedArticles();
-   // for(var map in selectedArticles){
+
       FullArticle article  = FullArticle.fromMap(map);
      await db.deleteArticleLocally(article);
    // }
     notifyListeners();
   }
+
+  List<FullArticle> cloudSelected = [];
+
+  deleteMultipleFromCloud()async{
+    final selectedCloudArticles= cloudSelectedBox.where((element) => element!=null).toList();
+    for(var article in selectedCloudArticles){
+      await deleteArticleFromCloud(article);
+    }
+    //notifyListeners();
+  }
+  Future deleteArticleFromCloud(FullArticle article)async{
+
+    final docRef = await fireStore.collection(user).doc('articles');
+    await docRef.update({'${article.title}':FieldValue.delete(),});
+
+    notifyListeners();
+  }
+
 
 
   Future setProfilePic() async {
@@ -110,22 +126,34 @@ setName(String name){
   var _selectedColor = Colors.black;
   List<FullArticle> savedBox;
 
+  List<FullArticle> cloudSelectedBox;
 
+  onChecked(int index,bool isChecked,List<FullArticle> list,String type) {
+    if (type == 'local'){
+      if (selectedBox == null) {
+        selectedBox = List<FullArticle>(list.length);
+      }
 
-  onChecked(int index,bool isChecked,List<FullArticle> list){
-    if(selectedBox==null){
-      selectedBox=List<FullArticle>(list.length);
-
+    final article = list[index];
+    if (isChecked)
+      selectedBox[index] = article;
+    else {
+      if (index < selectedBox.length)
+        selectedBox[index] = null;
     }
+  }else {
+      if (cloudSelectedBox == null) {
+        cloudSelectedBox = List<FullArticle>(list.length);
+      }
 
+      final article = list[index];
+      if (isChecked)
+        cloudSelectedBox[index] = article;
 
-
-    final article =list[index];
-    if (isChecked) selectedBox[index]=article;
-  else {
-    if(index<selectedBox.length)
-
-      selectedBox[index] = null;
+      else {
+        if (index < cloudSelectedBox.length)
+          cloudSelectedBox[index] = null;
+      }
     }
     //notifyListeners();
   }
