@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:permission_handler/permission_handler.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -29,14 +28,14 @@ class MyDatabase {
     await _createDbForPic();
     try {
       await db.rawInsert('INSERT INTO PictureTable(picture) VALUES("${imageFile}")');
-      // final listOfPics = await db.query('PictureTable', columns: ['picture']);
-      //  profilePic = listOfPics.last['picture'];
+
     } on Exception catch (e) {
       print('Failed to cache pic \n e');
     }
 
   }
   var profilePic;
+
   Future<void> retrievePicFromDataBase()async{
     await _createDbForPic();
     try {
@@ -64,8 +63,17 @@ class MyDatabase {
     int row = await db.rawInsert(
         'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
     list = await db.query('ArticleTable', columns: ['title','body']);
-    return row;
+    //print(row);
+    return row-1;
     print('saved');
+  }
+  deleteArticleLocally(FullArticle article)async{
+   _createDb();
+    try {
+      await db.rawDelete('DELETE FROM ArticleTable WHERE id = ${article.id}', );
+    } on Exception catch (e) {
+      print('Failed to delete articles \n\n\n$e');
+    }
   }
   Future<void> initializeList()async{
     list = await db.query('ArticleTable', columns: ['title','body']);
@@ -74,6 +82,7 @@ class MyDatabase {
   Future<List<Map>> readAllData() async {
     await _createDb();
     return await db.query('ArticleTable', columns: null);
+
     //return await db.rawQuery('SELECT * FROM ArticleTable');
   }
 }

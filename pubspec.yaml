@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  expandable: ^4.1.4
+  flutter_slidable: ^0.5.7
   firebase_storage: any
   flutter_image_compress: ^0.7.0
   avatar_glow: ^1.2.0

@@ -17,8 +17,8 @@ mixin SavingMethods{
   final fireStore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
-  List<Map<String,String>> selectedBox ;
-  List<Map<String,String>> selectedArticles ;
+  List<FullArticle> selectedBox ;
+  List<FullArticle> selectedArticles ;
   String get user=> auth.currentUser.uid;
 
 
@@ -63,7 +63,7 @@ mixin SavingMethods{
     print('____________________________________________');
   }
 
-  _initializeSelectedArticles(){
+  initializeSelectedArticles(){
     selectedArticles = selectedBox.where((element) => element!=null).toList();
   }
 
@@ -72,37 +72,56 @@ mixin SavingMethods{
     if(articlesFetched.isEmpty){
       final docRef = fireStore.collection(user).doc('articles');
       final documentSnapshot = await docRef.get();
-      var map = documentSnapshot.data();
-
-      final keys = map.keys.toList();
-      for (var key in keys) {
-        final articleMap = map[key];
-        final title = articleMap.keys.first.toString();
-        final body = articleMap.values.first.toString();
-        print(title);
-        print(body);
-        articlesFetched.add(FullArticle(title, body));
+      var map = documentSnapshot.data();//{'$title':{title:body,'id':id}}
+      print(map);
+      final keys = map.keys.toList();//[fry,wet]
+      for(var key in keys){
+         final mapGot = map[key];
+         final id= mapGot['id'];
+         final title = key;
+         final body = mapGot[key];
+         articlesFetched.add(FullArticle(title, body,id));
       }
+      // final mapGot= map[keys[0]];
+
+
+      // for (var key in keys) {
+      //   final articleMap = map[key];
+      //   final title = articleMap.keys.first.toString();
+      //   final body = articleMap.values.first.toString();
+      //   final id = int.parse(articleMap.values[1].toString());
+      // }
     }
   }
+  initializeUploadArticles(){
 
-  upLoad()async{
+  }
+
+  upLoadMultipleArticles()async{
     selectedArticles=[];
     final docRef= fireStore.collection(user).doc('articles');
-    _initializeSelectedArticles();
-    print(selectedArticles);
+    initializeSelectedArticles();
     if(selectedArticles.isNotEmpty){
       for(var article in selectedArticles ){
-        var title = article['title'];
-        var body  = article['body'];
+        var title = article.title;
+        var body  = article.body;
+        var id = article.id;
+        print(article);
         final docSnapshot = await docRef.get();
-        if(docSnapshot.exists)await docRef.update({'$title':{title : body}});
-        else await docRef.set({'$title':{title : body}},SetOptions(merge: true));
-        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body));
+        if(!docSnapshot.exists) await docRef.set({'$title':{title : body,'id':id},});
+        else  await docRef.update({'$title':{title : body,'id':id},});
+          //await docRef.update({'id':id});
+       // }//'id':id.toString()
+       // else {
+
+         // await docRef.set({'id':id},SetOptions(merge: true));
+       // }
+        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body,id));
       }
     }
 
   }
+
   Future deleteFromStorage() async {
     final downloadurlMap = await fireStore.collection(user).doc('profile_pic').get();
     final String downloadurl = downloadurlMap['profile'].toString();
@@ -115,6 +134,7 @@ mixin SavingMethods{
     } on Exception catch (e) {
       print('Could not delete old pic');
     }
+
   }
 
 }

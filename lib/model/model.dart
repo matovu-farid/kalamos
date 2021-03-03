@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/writer_profile.dart';
 import 'saving_methods.dart';
 import 'dart:core';
@@ -19,6 +20,25 @@ class WritersModel with ChangeNotifier,SavingMethods{
   TextEditingController nameController;
   File image;
   final _picker = ImagePicker();
+
+  Future<void> delete()async{
+    selectedArticles=[];
+    initializeSelectedArticles();
+    for(var article in selectedArticles){
+
+     await db.deleteArticleLocally(article);
+    }
+    notifyListeners();
+  }
+Future<void> deleteSingle(Map<String,String> map)async{
+    // selectedArticles=[];
+    //initializeSelectedArticles();
+   // for(var map in selectedArticles){
+      FullArticle article  = FullArticle.fromMap(map);
+     await db.deleteArticleLocally(article);
+   // }
+    notifyListeners();
+  }
 
 
   Future setProfilePic() async {
@@ -35,7 +55,6 @@ class WritersModel with ChangeNotifier,SavingMethods{
     }catch(e){
           print('Image was not uploaded \n error : $e');
     }
-        //image = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -89,14 +108,16 @@ setName(String name){
 
   var _pickerColor = Colors.black;
   var _selectedColor = Colors.black;
+  List<FullArticle> savedBox;
 
 
 
-  onChecked(int index,bool isChecked,List<Map<String,String>> list){
+  onChecked(int index,bool isChecked,List<FullArticle> list){
     if(selectedBox==null){
-      selectedBox=List<Map<String,String>>(list.length);
+      selectedBox=List<FullArticle>(list.length);
 
     }
+
 
 
     final article =list[index];

@@ -21,14 +21,35 @@ class _ViewArticlesPageState extends State<ViewArticlesPage> {
     return Stack(
       children: [
         ViewArticles(db: db, listOfTiles: listOfTiles),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: FloatingActionButton.extended(
-              onPressed: Provider.of<WritersModel>(context,listen: false).upLoad,
-              label: Text('Upload')),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+              ViewButton(text:'Upload',onPressed:Provider.of<WritersModel>(context,listen: false).upLoadMultipleArticles),
+              ViewButton(text:'Delete',onPressed:Provider.of<WritersModel>(context,listen: false).delete),
+            ],),
+          ),
         )
       ],
     );
+  }
+}
+
+class ViewButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  const ViewButton({
+    Key key, this.text, this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+        onPressed: onPressed,
+        label: Text(text));
   }
 }
 

@@ -18,11 +18,12 @@ class SaveArticle extends StatelessWidget {
       onPressed: () async{
         final title = Provider.of<WritersModel>(context,listen: false).titleController.text;
         final body = Provider.of<WritersModel>(context,listen: false).bodyController.text;
-        FullArticle article = FullArticle(title, body);
+        FullArticle article = FullArticle(title, body,null);
         MyDatabase db= Provider.of<WritersModel>(context,listen: false).db;
-        int row= await db.saveArticle(article);
+        int index = await db.saveArticle(article);
        //Navigator.of(context).pushNamed('/view');
         DefaultTabController.of(context).animateTo(1);
+
 
 
 
