@@ -12,7 +12,7 @@ class ViewArticlesPage extends StatefulWidget {
 }
 
 class _ViewArticlesPageState extends State<ViewArticlesPage> {
-  List<Widget> listOfTiles = [];
+  //List<Widget> listOfTiles = [];
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _ViewArticlesPageState extends State<ViewArticlesPage> {
 
     return Stack(
       children: [
-        ViewArticles(db: db, listOfTiles: listOfTiles),
+        ViewArticles(db: db),
         Container(
           width: MediaQuery.of(context).size.width,
           child: Align(

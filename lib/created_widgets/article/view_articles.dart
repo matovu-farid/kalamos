@@ -9,14 +9,14 @@ import 'package:writers_app/created_classes/database.dart';
 import 'package:writers_app/model/model.dart';
 
 class ViewArticles extends StatelessWidget {
-  const ViewArticles({
+  ViewArticles({
     Key key,
     @required this.db,
-    @required this.listOfTiles,
+   // @required this.listOfTiles,
   }) : super(key: key);
 
   final MyDatabase db;
-  final List<Widget> listOfTiles;
+  List<Widget> listOfTiles ;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,7 @@ class ViewArticles extends StatelessWidget {
         future: db.readAllData(),
         builder: (context, snapshot) {
           List<Map> list = snapshot.data;
+          listOfTiles = [];
           if (snapshot.hasError) {
             return Text('A little Problem : ${snapshot.error}');
           }
@@ -36,7 +37,7 @@ class ViewArticles extends StatelessWidget {
                       'body': e['body'].toString()
                     })
                 .toList();
-            print(typedList);
+           // print(typedList);
              List<FullArticle> articleList= typedList.map((e) => FullArticle.fromMap(e)).toList();
             for (var i = 0; i < typedList.length; i++) {
               int index = i;
