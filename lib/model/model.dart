@@ -41,7 +41,29 @@ Future<void> deleteSingle(FullArticle article)async{
 
   List<FullArticle> cloudSelected = [];
 
+  fetchFromFirestore({bool fetch = false})async {
+    if(articlesFetched.isEmpty||fetch==true){
+      articlesFetched = [];
+      final docRef = fireStore.collection(user).doc('articles');
+      final documentSnapshot = await docRef.get();
+      var map = documentSnapshot.data(); //{'$title':{title:body,'id':id}}
+      print(map);
+      final keys = map.keys.toList(); //[fry,wet]
+      for (var key in keys) {
+        final mapGot = map[key];
+        final id = mapGot['id'];
+        final title = key;
+        final body = mapGot[key];
+        articlesFetched.add(FullArticle(title, body, id));
+      }
+      notifyListeners();
+    }
+
+
+  }
+
   deleteMultipleFromCloud()async{
+
     if(articlesFetched!=null) {
       final selectedCloudArticles = cloudSelectedBox.where((
           element) => element != null).toList();

@@ -69,25 +69,7 @@ mixin SavingMethods{
   }
 
 
-  fetchFromFirestore()async {
-    if(articlesFetched.isEmpty){
-    //articlesFetched = [];
-    final docRef = fireStore.collection(user).doc('articles');
-    final documentSnapshot = await docRef.get();
-    var map = documentSnapshot.data(); //{'$title':{title:body,'id':id}}
-    print(map);
-    final keys = map.keys.toList(); //[fry,wet]
-    for (var key in keys) {
-      final mapGot = map[key];
-      final id = mapGot['id'];
-      final title = key;
-      final body = mapGot[key];
-      articlesFetched.add(FullArticle(title, body, id));
-    }
-  }
 
-
-  }
   initializeUploadArticles(){
 
   }
