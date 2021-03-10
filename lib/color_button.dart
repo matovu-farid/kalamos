@@ -23,7 +23,7 @@ class ColorButton extends StatelessWidget {
             Provider.of<WritersModel>(context, listen: false).changeColor;
         showDialog(
           context: context,
-          child: AlertDialog(
+          builder:(_)=> AlertDialog(
             title: const Text('Pick a color!'),
             content: SingleChildScrollView(
               child: ColorPicker(

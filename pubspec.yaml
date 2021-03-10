@@ -43,6 +43,8 @@ dependencies:
   share: ^0.6.5+4
   provider: ^4.3.2+3
   toast: ^0.1.5
+  zefyr: ^0.12.0
+  quill_delta: any
   flutter:
     sdk: flutter
 

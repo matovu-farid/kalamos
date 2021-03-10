@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quill_delta/quill_delta.dart';
 import 'package:writers_app/model/model.dart';
+import 'package:zefyr/zefyr.dart';
 class ArticleInput extends StatelessWidget {
   const ArticleInput(
       {Key key,
