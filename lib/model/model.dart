@@ -147,9 +147,6 @@ setName(String name){
    notifyListeners();
 }
 
-
-
-
   var _pickerColor = Colors.black;
   var _selectedColor = Colors.black;
   List<FullArticle> savedBox;

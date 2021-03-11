@@ -4,6 +4,7 @@ import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:flutter_expanded_tile/tileController.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
 import 'package:writers_app/model/model.dart';
@@ -120,7 +121,8 @@ class _MyListTileState extends State<MyListTile> {
             caption: 'Share',
             color: Colors.indigo,
             icon: Icons.share,
-            onTap: () => {},
+            onTap: () => Share.share('${widget.article}')
+            ,
           ),
         ],
         secondaryActions: <Widget>[

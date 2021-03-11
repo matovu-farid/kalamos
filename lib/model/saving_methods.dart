@@ -36,10 +36,6 @@ mixin SavingMethods{
   }
   DocumentReference get profilePicRef=>fireStore.collection(user).doc('profile_pic');
 
-
-
-
-
   Future<String> uploadFile(File _image) async {
 
     await deleteFromStorage();
@@ -67,7 +63,6 @@ mixin SavingMethods{
   initializeSelectedArticles(){
     selectedArticles = selectedBox.where((element) => element!=null).toList();
   }
-
 
 
   initializeUploadArticles(){

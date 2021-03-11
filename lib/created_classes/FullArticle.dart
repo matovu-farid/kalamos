@@ -30,4 +30,7 @@ class FullArticle{
   String toString() {
     return 'FullArticle{title: $title, body: $body, id: $id}';
   }
+  shared(){
+    return '$title\n$body';
+  }
 }

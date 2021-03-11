@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:writers_app/color_button.dart';
+import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_widgets/sending_buttons/save_Article.dart';
 import 'package:writers_app/model/model.dart';
 import 'package:zefyr/zefyr.dart';
@@ -18,11 +21,13 @@ class WriteArticle extends StatefulWidget {
 }
 
 class _WriteArticleState extends State<WriteArticle> {
-  ZefyrController _controller;
-  FocusNode _focusNode;
+  ZefyrController _titleController;
+  ZefyrController _bodyController;
+  FocusNode _titleFocusNode;
+  FocusNode _bodyFocusNode;
 
   NotusDocument loadDocument(){
-    final _delta =  Delta()..insert('Body\n');
+    final _delta =  Delta()..insert('\n');
    return NotusDocument.fromDelta(_delta);
 
   }
@@ -30,43 +35,79 @@ class _WriteArticleState extends State<WriteArticle> {
   @override
   void initState() {
     super.initState();
-    _controller = ZefyrController(loadDocument());
-    _focusNode = FocusNode();
+    _titleController = ZefyrController(loadDocument());
+    _bodyController = ZefyrController(loadDocument());
+    _titleFocusNode = FocusNode();
+    _bodyFocusNode = FocusNode();
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
 
   }
+  void _saveDocument(BuildContext context,WritersModel model) {
+
+  final body = _bodyController.document.toPlainText();
+  final title = _titleController.document.toPlainText();
+   final database = model.db;
+   database.saveArticle(FullArticle(title, body, 0));
+    //
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double editorHeight = screenHeight * 0.6;
 
-    return Stack(
-      children: [
-        SizedBox.expand(
-          child: Column(
-            children: [
-              ArticleInput(maxLines: 1, labelText: 'title',
-                  controller: Provider.of<WritersModel>(context).titleController),
-              Flexible(
-                child: ZefyrScaffold(
-                    child:ZefyrEditor(controller: _controller,focusNode: _focusNode,)
+
+
+
+    return ZefyrScaffold(
+      child: Stack(
+        children: [
+          Padding(
+              padding: EdgeInsets.all(10),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    ZefyrField(
+                      height: 30,
+                      controller: _titleController,
+                      focusNode: _titleFocusNode,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Title Here...',
+
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    ZefyrField(
+                      height: editorHeight, // set the editor's height
+                      controller: _bodyController,
+                      focusNode: _bodyFocusNode,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        hintText: 'Enter body Here...',
+
+                      ),
+                      physics: ClampingScrollPhysics(),
+                    )
+                  ],
                 ),
-                // child: ArticleInput(
-                //   maxLines: 100000,
-                //   labelText: 'Body',
-                //   controller: Provider.of<WritersModel>(context).bodyController,
-                // ),
-              ),
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-            child: SaveArticle())
-      ],
+              )),
+          Align(
+            alignment: Alignment.bottomRight,
+              child: Consumer<WritersModel>(
+                builder:(_,model,child)=> FloatingActionButton(
+
+                    onPressed: ()=>_saveDocument(context,model),
+                  child: Icon(Icons.save),
+                ),
+              ))
+        ],
+      ),
     );
   }
 }
