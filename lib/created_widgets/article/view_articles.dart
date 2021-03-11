@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:flutter_expanded_tile/tileController.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:quill_delta/quill_delta.dart';
 import 'package:share/share.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
 import 'package:writers_app/model/model.dart';
+import 'package:zefyr/zefyr.dart';
 
 class ViewArticles extends StatelessWidget {
   ViewArticles({
@@ -21,30 +25,40 @@ class ViewArticles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Map>>(
+    return FutureBuilder<List<Map<String,dynamic>>>(
         future: Provider.of<WritersModel>(context).db.readAllData(),
         builder: (context, snapshot) {
           List<Map> list = snapshot.data;
+
+
           listOfTiles = [];
           if (snapshot.hasError) {
             return Text('A little Problem : ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.done) {
+
             if (snapshot.data.isEmpty) return Scaffold(body: Container());
-            List<Map> typedList = list
-                .map((e) => {
-                      'id':int.parse(e['id'].toString()),
-                      'title': e['title'].toString(),
-                      'body': e['body'].toString()
-                    })
-                .toList();
-           // print(typedList);
-             List<FullArticle> articleList= typedList.map((e) => FullArticle.fromMap(e)).toList();
-            for (var i = 0; i < articleList.length; i++) {
-              int index = i;
-              final article = articleList[i];
-              listOfTiles.add(MyListTile(articleList: articleList, index: index,db:db,listOfTiles: listOfTiles,type:'local',article: article,));
-            }
+
+
+            final listOfNotus= snapshot.data.map((e) =>
+                NotusDocument.fromJson(jsonDecode(e['title']))
+            ).toList();
+
+
+            return ZefyrScaffold(
+              child: ListView.builder(
+                itemCount: listOfNotus.length,
+                  itemBuilder: (_,index){
+
+                  //listOfNotus.map((e) => e.).toList();
+                   // return Container();
+                return ZefyrField(mode:ZefyrMode.view,
+                  controller: ZefyrController(listOfNotus[index]),
+                  focusNode: FocusNode(),
+                  height: 30,
+                );
+              }),
+            );
             return ListView(
               children: [
                 ...listOfTiles,

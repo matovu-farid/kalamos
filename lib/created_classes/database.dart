@@ -67,6 +67,23 @@ class MyDatabase {
     return row-1;
     print('saved');
   }
+  Future<int> saveArticle2(FullArticle article) async {
+    await _createDb();
+
+    list = await db.query('ArticleTable', columns: ['title','body']);
+    int row = await db.insert('ArticleTable', {'title':article.title,'body':article.body});
+    return row-1;
+  }
+
+  Future<int> saveZefyrDoc(String title,String body) async {
+    await _createDb();
+    int row = await db.rawInsert(
+        'INSERT INTO ArticleTable(title,body) VALUES(${title}, ${body})');
+    list = await db.query('ArticleTable', columns: ['title','body']);
+    //print(row);
+    return row-1;
+    print('saved');
+  }
   deleteArticleLocally(FullArticle article)async{
    _createDb();
     try {
@@ -79,10 +96,9 @@ class MyDatabase {
     list = await db.query('ArticleTable', columns: ['title','body']);
   }
 
-  Future<List<Map>> readAllData() async {
+  Future<List<Map<String,dynamic>>> readAllData() async {
     await _createDb();
     return await db.query('ArticleTable', columns: null);
 
-    //return await db.rawQuery('SELECT * FROM ArticleTable');
   }
 }

@@ -47,11 +47,15 @@ class _WriteArticleState extends State<WriteArticle> {
   }
   void _saveDocument(BuildContext context,WritersModel model) {
 
-  final body = _bodyController.document.toPlainText();
-  final title = _titleController.document.toPlainText();
+  final body = _bodyController.document;
+  final title = _titleController.document;
    final database = model.db;
-   database.saveArticle(FullArticle(title, body, 0));
-    //
+    var encordedTitle= jsonEncode(title.toJson());
+    var encordedBody= jsonEncode(body.toJson());
+    //print("$encordedTitle");
+    database.saveArticle2(FullArticle(encordedTitle, encordedBody, 0));
+   //database.saveArticle(FullArticle(encordedTitle, encordedBody, 0));
+    //database.saveZefyrDoc(encordedTitle, encordedBody);
 
   }
 
