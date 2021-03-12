@@ -194,12 +194,6 @@ class _MyListTileState extends State<MyListTile> {
                 model.deleteArticleFromCloud(widget.originalArticle);
 
               }
-
-
-
-
-
-
             },
           ),
         ],

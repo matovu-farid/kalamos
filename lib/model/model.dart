@@ -79,7 +79,7 @@ Future<void> deleteSingle(OriginalArticle article)async{
   Future deleteArticleFromCloud(OriginalArticle article)async{
 
     final docRef = await fireStore.collection(user).doc('articles');
-    await docRef.update({'${article.title}':FieldValue.delete(),});
+    await docRef.update({'${article.title.toPlainText()}':FieldValue.delete(),});
 
     notifyListeners();
   }
