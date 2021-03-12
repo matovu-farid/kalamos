@@ -52,7 +52,7 @@ Future<void> deleteSingle(OriginalArticle article)async{
       final keys = map.keys.toList();
       for (var key in keys) {
         final list = map[key];
-        final id = list[0].toString() as int;
+        final id = list[0];
         final encordedTitle = list[1];
         final encordedBody = list[2];
         articlesFetched.add(OriginalArticle.fromJson(encordedTitle, encordedBody, id));

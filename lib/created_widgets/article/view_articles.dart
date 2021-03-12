@@ -239,19 +239,22 @@ final OriginalArticle orginalArticle;
                       headerAlignment: ExpandablePanelHeaderAlignment.center,
                       tapBodyToCollapse: true,
                     ),
-                    header: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: ZefyrField(mode:ZefyrMode.view,
-                          controller: ZefyrController(orginalArticle.title),
-                          focusNode: FocusNode(),
-                          height: 25,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none
-                              )
-                          ),
+                    header: Container(
+                      color: selected?Colors.green:Colors.white70,
+                      child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: ZefyrField(mode:ZefyrMode.view,
+                            controller: ZefyrController(orginalArticle.title),
+                            focusNode: FocusNode(),
+                            height: 25,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none
+                                )
+                            ),
 
-                        )
+                          )
+                      ),
                     ),
 
                     expanded: Container(

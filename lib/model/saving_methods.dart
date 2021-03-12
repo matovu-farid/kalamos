@@ -86,7 +86,7 @@ mixin SavingMethods{
         if(articlesFetched.isNotEmpty) articlesFetched.add(OriginalArticle(title, body,id));
        // DefaultTabController.of(context).animateTo(2);
         final docSnapshot = await docRef.get();
-        if(!docSnapshot.exists) await docRef.set({'${title.toPlainText()}':[id,title,body],});
+        if(!docSnapshot.exists) await docRef.set({'${title.toPlainText()}':[id,jsonEncode(title),jsonEncode(body)],});
         else  await docRef.update({'${title.toPlainText()}':[id,jsonEncode(title),jsonEncode(body)],});
 
       }
