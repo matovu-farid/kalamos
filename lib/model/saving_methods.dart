@@ -31,7 +31,7 @@ mixin SavingMethods{
 
       String imageURL = await uploadFile(image);
       DocumentSnapshot docSnapShot =await profilePicRef.get();
-      if(!docSnapShot.exists) profilePicRef.set({"profile": imageURL});
+      if(docSnapShot.exists==false) profilePicRef.set({"profile": imageURL});
 
      else  profilePicRef.update({"profile": imageURL});
 
@@ -97,17 +97,19 @@ mixin SavingMethods{
 
   Future deleteFromStorage() async {
     final downloadurlMap = await fireStore.collection(user).doc('profile_pic').get();
-    final String downloadurl = downloadurlMap['profile'].toString();
+   if(downloadurlMap.exists) {
+     final String downloadurl = downloadurlMap['profile'].toString();
 
-    String fileUrl =Uri.decodeFull(downloadurl).replaceAll(RegExp(r'(\?alt).*'), '');
-    final photoRef =  FirebaseStorage.instance.refFromURL(fileUrl);
+     String fileUrl = Uri.decodeFull(downloadurl).replaceAll(
+         RegExp(r'(\?alt).*'), '');
+     final photoRef = FirebaseStorage.instance.refFromURL(fileUrl);
 
-    try {
-      photoRef.delete();
-    } on Exception catch (e) {
-      print('Could not delete old pic');
-    }
-
+     try {
+       photoRef.delete();
+     } on Exception catch (e) {
+       print('Could not delete old pic');
+     }
+   }
   }
 
 
