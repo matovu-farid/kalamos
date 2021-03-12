@@ -47,15 +47,19 @@ Future<void> deleteSingle(OriginalArticle article)async{
       articlesFetched = [];
       final docRef = fireStore.collection(user).doc('articles');
       final documentSnapshot = await docRef.get();
+
       var map = documentSnapshot.data(); //{'${title.toPlainText()}':[id,title,body],}
       print(map);
-      final keys = map.keys.toList();
-      for (var key in keys) {
-        final list = map[key];
-        final id = list[0];
-        final encordedTitle = list[1];
-        final encordedBody = list[2];
-        articlesFetched.add(OriginalArticle.fromJson(encordedTitle, encordedBody, id));
+      if(map!=null) {
+        final keys = map.keys.toList();
+        for (var key in keys) {
+          final list = map[key];
+          final id = list[0];
+          final encordedTitle = list[1];
+          final encordedBody = list[2];
+          articlesFetched.add(
+              OriginalArticle.fromJson(encordedTitle, encordedBody, id));
+        }
       }
       notifyListeners();
     }

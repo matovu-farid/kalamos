@@ -8,11 +8,12 @@ class MyDatabase {
   static Database db;
 
   Future _createDb() async {
-    String path = '${await getDatabasesPath()}article.db';
+    String path = '${await getDatabasesPath()}${articleTable}.db';
     db = await openDatabase(path, version: 1, onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE ArticleTable (id INTEGER PRIMARY KEY, title TEXT, body TEXT)');
+          'CREATE TABLE ${articleTable} (id INTEGER PRIMARY KEY, title TEXT, body TEXT)');
     });
+
   }
 
   Future _createDbForPic() async {
@@ -36,6 +37,7 @@ class MyDatabase {
 
   }
   var profilePic;
+  String articleTable = 'MyArticleTable';
 
   Future<void> retrievePicFromDataBase()async{
     await _createDbForPic();
@@ -58,48 +60,39 @@ class MyDatabase {
   List<Map> list = [];
 
 
-
-  Future<int> saveArticle(PlainArticle article) async {
-    await _createDb();
-    int row = await db.rawInsert(
-        'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
-    list = await db.query('ArticleTable', columns: ['title','body']);
-    //print(row);
-    return row-1;
-    print('saved');
-  }
   Future<int> saveArticle2(PlainArticle article) async {
     await _createDb();
 
-    list = await db.query('ArticleTable', columns: ['title','body']);
-    int row = await db.insert('ArticleTable', {'title':article.title,'body':article.body});
+    list = await db.query(articleTable, columns: ['title','body']);
+    int row = await db.insert(articleTable, {'title':article.title,'body':article.body});
     return row-1;
   }
 
-  Future<int> saveZefyrDoc(String title,String body) async {
-    await _createDb();
-    int row = await db.rawInsert(
-        'INSERT INTO ArticleTable(title,body) VALUES(${title}, ${body})');
-    list = await db.query('ArticleTable', columns: ['title','body']);
-    //print(row);
-    return row-1;
-    print('saved');
-  }
+  // Future<int> saveZefyrDoc(String title,String body) async {
+  //   await _createDb();
+  //   int row = await db.rawInsert(
+  //       'INSERT INTO ArticleTable(title,body) VALUES(${title}, ${body})');
+  //   list = await db.query('ArticleTable', columns: ['title','body']);
+  //   //print(row);
+  //   return row-1;
+  //   print('saved');
+  // }
   deleteArticleLocally(OriginalArticle article)async{
    _createDb();
     try {
-      await db.rawDelete('DELETE FROM ArticleTable WHERE id = ${article.id}', );
+     // await db.rawDelete('DELETE FROM ArticleTable WHERE id = ${article.id}', );
+    await db.delete(articleTable,where: 'id = ${article.id}');
     } on Exception catch (e) {
       print('Failed to delete articles \n\n\n$e');
     }
   }
   Future<void> initializeList()async{
-    list = await db.query('ArticleTable', columns: ['title','body']);
+    list = await db.query(articleTable, columns: ['title','body']);
   }
 
   Future<List<Map<String,dynamic>>> readAllData() async {
     await _createDb();
-    return await db.query('ArticleTable', columns: null);
+    return await db.query(articleTable, columns: null);
 
   }
 }

@@ -39,23 +39,14 @@ class ViewArticles extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
 
-            if (snapshot.data.isEmpty) return Scaffold(body: Container());
 
 
+            if(snapshot.hasData&&snapshot.data!=null){
             final listOfNotus= snapshot.data.map((e) =>
                 NotusDocument.fromJson(jsonDecode(e['title']))
             ).toList();
-            
-            // for(int index = 0;index<listOfNotus.length;index++){
-            //   listOfTiles.add(
-            //       MyListTile(articleList: articleList, index: index, type: type, article: article)
-            //   );
-            // }
              List<OriginalArticle> listOfOriginalArticles = snapshot.data.map((e) => OriginalArticle.fromJson(e['title'], e['body'], e['id'])).toList();
-            // for(int i=0;i<snapshot.data.length;i++){
-            //   int index = i;
-            //
-            // }
+
             return ZefyrScaffold(
               child: ListView.builder(
                 itemCount: listOfNotus.length,
@@ -75,15 +66,9 @@ class ViewArticles extends StatelessWidget {
                   height: 30,
                 );
               }),
-            );
-            return ListView(
-              children: [
-                ...listOfTiles,
-                SizedBox(
-                  height: 50,
-                )
-              ],
-            );
+            );}
+            return Scaffold(body: Container());
+
           }
           return Center(
             child: Padding(
