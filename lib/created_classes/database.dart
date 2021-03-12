@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:writers_app/created_classes/original_article.dart';
 
 class MyDatabase {
   static Database db;
@@ -58,7 +59,7 @@ class MyDatabase {
 
 
 
-  Future<int> saveArticle(FullArticle article) async {
+  Future<int> saveArticle(PlainArticle article) async {
     await _createDb();
     int row = await db.rawInsert(
         'INSERT INTO ArticleTable(title,body) VALUES("${article.title}", "${article.body}")');
@@ -67,7 +68,7 @@ class MyDatabase {
     return row-1;
     print('saved');
   }
-  Future<int> saveArticle2(FullArticle article) async {
+  Future<int> saveArticle2(PlainArticle article) async {
     await _createDb();
 
     list = await db.query('ArticleTable', columns: ['title','body']);
@@ -84,7 +85,7 @@ class MyDatabase {
     return row-1;
     print('saved');
   }
-  deleteArticleLocally(FullArticle article)async{
+  deleteArticleLocally(OriginalArticle article)async{
    _createDb();
     try {
       await db.rawDelete('DELETE FROM ArticleTable WHERE id = ${article.id}', );

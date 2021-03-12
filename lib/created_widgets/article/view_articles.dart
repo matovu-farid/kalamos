@@ -10,7 +10,9 @@ import 'package:quill_delta/quill_delta.dart';
 import 'package:share/share.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
+import 'package:writers_app/created_classes/original_article.dart';
 import 'package:writers_app/model/model.dart';
+import 'package:writers_app/model/zefyr_model.dart';
 import 'package:zefyr/zefyr.dart';
 
 class ViewArticles extends StatelessWidget {
@@ -43,15 +45,30 @@ class ViewArticles extends StatelessWidget {
             final listOfNotus= snapshot.data.map((e) =>
                 NotusDocument.fromJson(jsonDecode(e['title']))
             ).toList();
-
-
+            
+            // for(int index = 0;index<listOfNotus.length;index++){
+            //   listOfTiles.add(
+            //       MyListTile(articleList: articleList, index: index, type: type, article: article)
+            //   );
+            // }
+             List<OriginalArticle> listOfOriginalArticles = snapshot.data.map((e) => OriginalArticle.fromJson(e['title'], e['body'], e['id'])).toList();
+            // for(int i=0;i<snapshot.data.length;i++){
+            //   int index = i;
+            //
+            // }
             return ZefyrScaffold(
               child: ListView.builder(
                 itemCount: listOfNotus.length,
                   itemBuilder: (_,index){
 
-                  //listOfNotus.map((e) => e.).toList();
-                   // return Container();
+
+                    return MyListTile(
+                        articleList: listOfOriginalArticles,
+                        index: index,
+                        listOfTiles: listOfTiles,
+                        type: 'local',
+                        originalArticle: listOfOriginalArticles[index]
+                    );
                 return ZefyrField(mode:ZefyrMode.view,
                   controller: ZefyrController(listOfNotus[index]),
                   focusNode: FocusNode(),
@@ -80,15 +97,25 @@ class ViewArticles extends StatelessWidget {
 }
 
 class MyListTile extends StatefulWidget {
-  MyListTile({Key key, @required this.articleList, @required this.index, this.db, this.listOfTiles, @required this.type, @required this.article})
+  MyListTile({Key key,
+    @required this.articleList,
+    @required this.index,
+    this.db,
+  @required this.listOfTiles,
+    @required this.type,
+  @required this.originalArticle,
+
+  })
       : super(key: key);
 
-  final List<FullArticle> articleList;
+  final List<OriginalArticle> articleList;
   final int index;
   final MyDatabase db;
   final List<Widget> listOfTiles;
   final String type;
-  final FullArticle article;
+  final OriginalArticle originalArticle;
+
+
 
 
   @override
@@ -100,16 +127,20 @@ class _MyListTileState extends State<MyListTile> {
   bool isChecked = false;
   bool selected = false;
 
+
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<ViewModel>(context);
     final TabController tabController = DefaultTabController.of(context);
     WritersModel model = Provider.of<WritersModel>(context);
     final controller = ExpandableController();
 
     return GestureDetector(
       onDoubleTap: () {
-        model.titleController.text = (widget.articleList[widget.index]).title;
-        model.bodyController.text = (widget.articleList[widget.index]).body;
+        // model.titleController.text = widget.plainArticle.title;
+        // model.bodyController.text = widget.plainArticle.body;
+        viewModel.bodyController=ZefyrController(widget.originalArticle.body);
+        viewModel.titleController=ZefyrController(widget.originalArticle.title);
         tabController.animateTo(0);
       },
 
@@ -135,7 +166,7 @@ class _MyListTileState extends State<MyListTile> {
             caption: 'Share',
             color: Colors.indigo,
             icon: Icons.share,
-            onTap: () => Share.share('${widget.article}')
+            onTap: () => Share.share('${PlainArticle.fromOriginalArticle(widget.originalArticle)}')
             ,
           ),
         ],
@@ -153,16 +184,15 @@ class _MyListTileState extends State<MyListTile> {
             onTap: ()  {
              // widget.listOfTiles.removeAt(widget.index);
               if(widget.type=='local') {
-                Provider.of<WritersModel>(context,listen: false).deleteSingle(widget.article);
+                Provider.of<WritersModel>(context,listen: false).deleteSingle(widget.originalArticle);
 
               }else{
                 widget.articleList.removeAt(widget.index);
                 final model = Provider.of<WritersModel>(context,listen: false);
 
 
-                model.deleteArticleFromCloud(widget.article);
+                model.deleteArticleFromCloud(widget.originalArticle);
 
-                //widget.listOfTiles.removeAt(widget.index);
               }
 
 
@@ -173,9 +203,7 @@ class _MyListTileState extends State<MyListTile> {
             },
           ),
         ],
-        child: MyCard(
-          selected: selected,
-            title: widget.article.title,body: widget.article.body,controller:controller),
+        child: MyCard(controller: controller, selected: selected, orginalArticle: widget.originalArticle),
 
       ),
     );
@@ -186,12 +214,11 @@ class _MyListTileState extends State<MyListTile> {
 //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 class MyCard extends StatelessWidget {
-  final String title;
-  final String body;
+final OriginalArticle orginalArticle;
   final ExpandableController controller;
   final bool selected;
 
-  const MyCard({Key key, this.title, this.body, this.controller, this.selected}) : super(key: key);
+  const MyCard({Key key,@required this.controller,@required this.selected,@required this.orginalArticle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -202,15 +229,7 @@ class MyCard extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Column(
               children: <Widget>[
-                // SizedBox(
-                //   height: 150,
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       color: Colors.orange,
-                //       shape: BoxShape.rectangle,
-                //     ),
-                //   ),
-                // ),
+
                 ScrollOnExpand(
                   scrollOnExpand: true,
                   scrollOnCollapse: false,
@@ -222,47 +241,51 @@ class MyCard extends StatelessWidget {
                     ),
                     header: Padding(
                         padding: EdgeInsets.all(10),
-                        child: Text(
-                          title,
-                          style: Theme.of(context).textTheme.body2,
-                        )),
-                    collapsed: Text(
-                      body,
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                        child: ZefyrField(mode:ZefyrMode.view,
+                          controller: ZefyrController(orginalArticle.title),
+                          focusNode: FocusNode(),
+                          height: 25,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none
+                              )
+                          ),
+
+                        )
                     ),
+
                     expanded: Container(
 
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                         // for (var _ in Iterable.generate(5))
                             Padding(
                                 padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  body,
-                                  softWrap: true,
-                                  overflow: TextOverflow.fade,
+                                child: ZefyrField(mode:ZefyrMode.view,
+                                  controller: ZefyrController(orginalArticle.body),
+                                  focusNode: FocusNode(),
+                                  height: 25,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none
+                                    )
+                                  ),
+
+
                                 )),
                         ],
                       ),
                     ),
                     builder: (_, collapsed, expanded) {
-                      return Container(
-                        color: selected?Colors.green:Colors.white70,
-                        child: Expandable(
+                      return Expandable(
 
-                          collapsed: Padding(padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                          child: collapsed),
-                          expanded: Container(
-                            color: Colors.grey[200],
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                child: expanded,
-                              )),
-                          theme: const ExpandableThemeData(crossFadePoint: 0),
-                        ),
+                        expanded: Container(
+                          color: Colors.grey[200],
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                              child: expanded,
+                            )),
+                        theme: const ExpandableThemeData(crossFadePoint: 0),
                       );
                     },
                   ),

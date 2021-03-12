@@ -18,7 +18,7 @@ class SaveArticle extends StatelessWidget {
       onPressed: () async{
         final title = Provider.of<WritersModel>(context,listen: false).titleController.text;
         final body = Provider.of<WritersModel>(context,listen: false).bodyController.text;
-        FullArticle article = FullArticle(title, body,null);
+        PlainArticle article = PlainArticle(title, body,null);
         MyDatabase db= Provider.of<WritersModel>(context,listen: false).db;
         int index = await db.saveArticle(article);
         FocusScope.of(context).requestFocus(new FocusNode());

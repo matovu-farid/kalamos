@@ -7,6 +7,7 @@ import 'package:writers_app/color_button.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_widgets/sending_buttons/save_Article.dart';
 import 'package:writers_app/model/model.dart';
+import 'package:writers_app/model/zefyr_model.dart';
 import 'package:zefyr/zefyr.dart';
 import 'article.dart';
 
@@ -21,39 +22,31 @@ class WriteArticle extends StatefulWidget {
 }
 
 class _WriteArticleState extends State<WriteArticle> {
-  ZefyrController _titleController;
-  ZefyrController _bodyController;
-  FocusNode _titleFocusNode;
-  FocusNode _bodyFocusNode;
 
-  NotusDocument loadDocument(){
-    final _delta =  Delta()..insert('\n');
-   return NotusDocument.fromDelta(_delta);
 
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    _titleController = ZefyrController(loadDocument());
-    _bodyController = ZefyrController(loadDocument());
-    _titleFocusNode = FocusNode();
-    _bodyFocusNode = FocusNode();
-  }
-  @override
-  void dispose() {
-    super.dispose();
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _titleController = ZefyrController(loadDocument());
+  //   _bodyController = ZefyrController(loadDocument());
+  //   _titleFocusNode = FocusNode();
+  //   _bodyFocusNode = FocusNode();
+  // }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //
+  // }
+  void _saveDocument(BuildContext context,WritersModel model,ViewModel viewModel) {
 
-  }
-  void _saveDocument(BuildContext context,WritersModel model) {
-
-  final body = _bodyController.document;
-  final title = _titleController.document;
+  final body = viewModel.bodyController.document;
+  final title = viewModel.titleController.document;
    final database = model.db;
     var encordedTitle= jsonEncode(title.toJson());
     var encordedBody= jsonEncode(body.toJson());
     //print("$encordedTitle");
-    database.saveArticle2(FullArticle(encordedTitle, encordedBody, 0));
+    database.saveArticle2(PlainArticle(encordedTitle, encordedBody, 0));
    //database.saveArticle(FullArticle(encordedTitle, encordedBody, 0));
     //database.saveZefyrDoc(encordedTitle, encordedBody);
 
@@ -66,8 +59,7 @@ class _WriteArticleState extends State<WriteArticle> {
     double screenHeight = MediaQuery.of(context).size.height;
     double editorHeight = screenHeight * 0.6;
 
-
-
+    ViewModel viewModel = Provider.of<ViewModel>(context,listen: false);
 
     return ZefyrScaffold(
       child: Stack(
@@ -79,8 +71,8 @@ class _WriteArticleState extends State<WriteArticle> {
                   children: <Widget>[
                     ZefyrField(
                       height: 30,
-                      controller: _titleController,
-                      focusNode: _titleFocusNode,
+                      controller: viewModel.titleController,
+                      focusNode: viewModel.titleFocusNode,
                       decoration: InputDecoration(
                         hintText: 'Enter Title Here...',
 
@@ -89,8 +81,8 @@ class _WriteArticleState extends State<WriteArticle> {
                     SizedBox(height: 10,),
                     ZefyrField(
                       height: editorHeight, // set the editor's height
-                      controller: _bodyController,
-                      focusNode: _bodyFocusNode,
+                      controller: viewModel.bodyController,
+                      focusNode: viewModel.bodyFocusNode,
                       autofocus: false,
                       decoration: InputDecoration(
                         hintText: 'Enter body Here...',
@@ -106,7 +98,7 @@ class _WriteArticleState extends State<WriteArticle> {
               child: Consumer<WritersModel>(
                 builder:(_,model,child)=> FloatingActionButton(
 
-                    onPressed: ()=>_saveDocument(context,model),
+                    onPressed: ()=>_saveDocument(context,model,viewModel),
                   child: Icon(Icons.save),
                 ),
               ))

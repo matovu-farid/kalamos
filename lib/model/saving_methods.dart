@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -8,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
 import 'package:writers_app/created_classes/database.dart';
+import 'package:writers_app/created_classes/original_article.dart';
 
 mixin SavingMethods{
   TextEditingController bodyController=TextEditingController();
@@ -18,12 +20,12 @@ mixin SavingMethods{
   final fireStore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
 
-  List<FullArticle> selectedBox ;
-  List<FullArticle> selectedArticles ;
+  List<OriginalArticle> selectedBox ;
+  List<OriginalArticle> selectedArticles ;
   String get user=> auth.currentUser.uid;
 
 
-  List<FullArticle> articlesFetched = [];
+  List<OriginalArticle> articlesFetched = [];
 
   Future<void> upLoadPicAndSaveUrl(File image) async {
 
@@ -81,11 +83,11 @@ mixin SavingMethods{
         var title = article.title;
         var body  = article.body;
         var id = article.id;
-        if(articlesFetched.isNotEmpty) articlesFetched.add(FullArticle(title, body,id));
+        if(articlesFetched.isNotEmpty) articlesFetched.add(OriginalArticle(title, body,id));
        // DefaultTabController.of(context).animateTo(2);
         final docSnapshot = await docRef.get();
-        if(!docSnapshot.exists) await docRef.set({'$title':{title : body,'id':id},});
-        else  await docRef.update({'$title':{title : body,'id':id},});
+        if(!docSnapshot.exists) await docRef.set({'${title.toPlainText()}':[id,title,body],});
+        else  await docRef.update({'${title.toPlainText()}':[id,jsonEncode(title),jsonEncode(body)],});
 
       }
     }

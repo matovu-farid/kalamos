@@ -37,7 +37,7 @@ class UploadedList extends StatelessWidget {
 
 
                listOfTiles.add(MyListTile(
-                 article: article,
+                 originalArticle: article,
                     articleList: articlesFetched,
                     index: i,
                     listOfTiles: listOfTiles,

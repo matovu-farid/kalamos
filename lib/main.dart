@@ -10,12 +10,19 @@ import 'package:provider/provider.dart';
 import 'package:writers_app/model/model.dart';
 import 'created_widgets/ProfileWidgets/ProfilePage.dart';
 import 'created_widgets/send.dart';
+import 'model/zefyr_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(ChangeNotifierProvider<WritersModel>(
-      create: (_) => WritersModel(), child: MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<WritersModel>(create: (_) => WritersModel()),
+      ChangeNotifierProvider<ViewModel>(create: (_) => ViewModel()),
+    ],
+    child: MyApp(),
+
+  ));
 }
 
 class MyApp extends StatelessWidget {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:writers_app/created_classes/FullArticle.dart';
+import 'package:writers_app/created_classes/original_article.dart';
 import 'package:writers_app/created_classes/writer_profile.dart';
 import 'saving_methods.dart';
 import 'dart:core';
@@ -31,7 +32,7 @@ class WritersModel with ChangeNotifier,SavingMethods{
     }
     notifyListeners();
   }
-Future<void> deleteSingle(FullArticle article)async{
+Future<void> deleteSingle(OriginalArticle article)async{
 
 
      await db.deleteArticleLocally(article);
@@ -39,22 +40,22 @@ Future<void> deleteSingle(FullArticle article)async{
     notifyListeners();
   }
 
-  List<FullArticle> cloudSelected = [];
+  List<PlainArticle> cloudSelected = [];
 
   fetchFromFirestore({bool fetch = false})async {
     if(articlesFetched.isEmpty||fetch==true){
       articlesFetched = [];
       final docRef = fireStore.collection(user).doc('articles');
       final documentSnapshot = await docRef.get();
-      var map = documentSnapshot.data(); //{'$title':{title:body,'id':id}}
+      var map = documentSnapshot.data(); //{'${title.toPlainText()}':[id,title,body],}
       print(map);
-      final keys = map.keys.toList(); //[fry,wet]
+      final keys = map.keys.toList();
       for (var key in keys) {
-        final mapGot = map[key];
-        final id = mapGot['id'];
-        final title = key;
-        final body = mapGot[key];
-        articlesFetched.add(FullArticle(title, body, id));
+        final list = map[key];
+        final id = list[0].toString() as int;
+        final encordedTitle = list[1];
+        final encordedBody = list[2];
+        articlesFetched.add(OriginalArticle.fromJson(encordedTitle, encordedBody, id));
       }
       notifyListeners();
     }
@@ -75,7 +76,7 @@ Future<void> deleteSingle(FullArticle article)async{
     }
     //notifyListeners();
   }
-  Future deleteArticleFromCloud(FullArticle article)async{
+  Future deleteArticleFromCloud(OriginalArticle article)async{
 
     final docRef = await fireStore.collection(user).doc('articles');
     await docRef.update({'${article.title}':FieldValue.delete(),});
@@ -149,14 +150,14 @@ setName(String name){
 
   var _pickerColor = Colors.black;
   var _selectedColor = Colors.black;
-  List<FullArticle> savedBox;
+  List<PlainArticle> savedBox;
 
-  List<FullArticle> cloudSelectedBox;
+  List<OriginalArticle> cloudSelectedBox;
 
-  onLongPress(int index,bool isChecked,List<FullArticle> list,String type) {
+  onLongPress(int index,bool isChecked,List<OriginalArticle> list,String type) {
     if (type == 'local'){
       if (selectedBox == null) {
-        selectedBox = List<FullArticle>(list.length);
+        selectedBox = List<OriginalArticle>(list.length);
       }
 
     final article = list[index];
@@ -168,7 +169,7 @@ setName(String name){
     }
   }else {
       if (cloudSelectedBox == null) {
-        cloudSelectedBox = List<FullArticle>(list.length);
+        cloudSelectedBox = List<OriginalArticle>(list.length);
       }
 
       final article = list[index];

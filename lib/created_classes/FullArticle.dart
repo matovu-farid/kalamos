@@ -1,23 +1,32 @@
-class FullArticle{
+import 'package:writers_app/created_classes/original_article.dart';
+
+class PlainArticle{
 
   final String title;
   final String body;
    int index ;
    final int id;
 
-  FullArticle(this.title, this.body,this.id,{this.index=0});
-  factory FullArticle.fromMap(Map map){
-    return FullArticle(map['title'], map['body'], map['id']);
+  PlainArticle(this.title, this.body,this.id,{this.index=0});
+  factory PlainArticle.fromMap(Map map){
+    return PlainArticle(map['title'], map['body'], map['id']);
   }
   Map<String,String> toMap(){
     return {title:body};
   }
+  factory PlainArticle.fromOriginalArticle(OriginalArticle originalArticle){
+   String title = originalArticle.title.toPlainText();
+   String body = originalArticle.body.toPlainText();
+   int id = originalArticle.id;
+    return PlainArticle(title, body, id);
+  }
+
 
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FullArticle &&
+      other is PlainArticle &&
           runtimeType == other.runtimeType &&
           title == other.title &&
           body == other.body &&
