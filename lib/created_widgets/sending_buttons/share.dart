@@ -1,7 +1,7 @@
+import 'package:articlemodel/articlemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
-import 'package:writers_app/model/model.dart';
 import '../send_buttons.dart';
 
 class ShareWidget extends StatelessWidget {

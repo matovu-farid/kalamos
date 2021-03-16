@@ -22,17 +22,9 @@ environment:
 
 dependencies:
   liquid_pull_to_refresh: ^2.0.0
-  expandable: ^4.1.4
-  flutter_slidable: ^0.5.7
-  firebase_storage: any
-  flutter_image_compress: ^0.7.0
-  avatar_glow: ^1.2.0
-  circular_profile_avatar: ^1.0.8
-  image_picker: ^0.6.7+22
-  cloud_firestore: any
-  flutter_expanded_tile: ^0.2.1
+#  cloud_firestore: any
+#  flutter_expanded_tile: ^0.2.1
   permission_handler: ^5.1.0+2
-  sqflite: ^1.3.2+3
   font_awesome_flutter: ^8.11.0
   firebase_core: any
   google_sign_in: ^4.5.9
@@ -43,8 +35,15 @@ dependencies:
   share: ^0.6.5+4
   provider: ^4.3.2+3
   toast: ^0.1.5
-  zefyr: ^0.12.0
-  quill_delta: any
+#  articlemodel:
+#    path: ../articlemodel
+  profile_page:
+    path: ../shared_article_packages/profile_page
+  articleclasses:
+    path: ../shared_article_packages/articleclasses
+  articlewidgets:
+    path: ../shared_article_packages/articlewidgets
+
   flutter:
     sdk: flutter
 

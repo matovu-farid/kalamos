@@ -1,16 +1,15 @@
+import 'package:articlemodel/articlemodel.dart';
+import 'package:articlewidgets/articlewidgets.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:writers_app/my_drawer.dart';
-import 'created_widgets/article/article_body.dart';
-import 'created_widgets/article/article_view.dart';
+import 'package:profile_page/profile_page.dart';
+
 import 'created_widgets/authenticated.dart';
 import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:writers_app/model/model.dart';
-import 'created_widgets/ProfileWidgets/ProfilePage.dart';
-import 'created_widgets/send.dart';
-import 'model/zefyr_model.dart';
+import 'package:profile_page/profile_page.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +74,7 @@ class ConstantMaterialApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/': (_) => MyHomePage(title: 'Writers App'),
+        '/': (_) => MyHomePage(title: 'Shories'),
         '/Profile': (_) => ProfilePage(),
       },
     );
@@ -97,8 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final maxLines = 25;
-    // print('width : $width');
-    // print('height : $height');
+
 
     return DefaultTabController(
 

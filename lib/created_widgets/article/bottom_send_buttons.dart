@@ -1,6 +1,6 @@
+import 'package:articlemodel/articlemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:writers_app/model/model.dart';
 
 class BottomSendButtons extends StatelessWidget {
   const BottomSendButtons({
@@ -42,7 +42,7 @@ class DeleteButton extends StatelessWidget {
     return ViewButton(
         text: 'Delete',
         onPressed: (){
-          if(type=='local') Provider.of<WritersModel>(context, listen: false).deleteFromCache();
+          if(type=='local') Provider.of<WritersModel>(context, listen: false).deleteFromCache('WriterTable');
           else Provider.of<WritersModel>(context, listen: false).deleteMultipleFromCloud();
         }
     );

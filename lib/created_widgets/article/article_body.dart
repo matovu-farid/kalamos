@@ -1,15 +1,12 @@
 import 'dart:convert';
 
+import 'package:articleclasses/articleclasses.dart';
+import 'package:articlemodel/articlemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quill_delta/quill_delta.dart';
-import 'package:writers_app/color_button.dart';
-import 'package:writers_app/created_classes/FullArticle.dart';
-import 'package:writers_app/created_widgets/sending_buttons/save_Article.dart';
-import 'package:writers_app/model/model.dart';
-import 'package:writers_app/model/zefyr_model.dart';
+
+
 import 'package:zefyr/zefyr.dart';
-import 'article.dart';
 
 class WriteArticle extends StatefulWidget {
   const WriteArticle({
@@ -42,13 +39,11 @@ class _WriteArticleState extends State<WriteArticle> {
 
   final body = viewModel.bodyController.document;
   final title = viewModel.titleController.document;
-   final database = model.db;
+   final database = MyDatabase('WriterTable', 'WriterPic');
     var encordedTitle= jsonEncode(title.toJson());
     var encordedBody= jsonEncode(body.toJson());
-    //print("$encordedTitle");
     database.saveArticle2(PlainArticle(encordedTitle, encordedBody, 0));
-   //database.saveArticle(FullArticle(encordedTitle, encordedBody, 0));
-    //database.saveZefyrDoc(encordedTitle, encordedBody);
+
 
   }
 
