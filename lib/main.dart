@@ -1,6 +1,7 @@
 import 'package:articlemodel/articlemodel.dart';
 import 'package:articlewidgets/articlewidgets.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:profile_page/profile_page.dart';
 
 import 'created_widgets/authenticated.dart';
@@ -13,6 +14,7 @@ import 'package:profile_page/profile_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrintGestureArenaDiagnostics =true;
 
   runApp(MultiProvider(
     providers: [
@@ -51,7 +53,7 @@ class TheApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LitAuthInit(
-      authProviders: AuthProviders(google: true),
+      authProviders: AuthProviders(google: true,emailAndPassword:false),
       child: LayoutBuilder(builder: (context, constraints) {
         //if(constraints.maxHeight>900) return RotatedBox(quarterTurns: 1,child: ConstantMaterialApp());
         //else

@@ -17,7 +17,7 @@ final String type;
             text: 'Upload',
             onPressed:()async{
 
-              await Provider.of<WritersModel>(context, listen: false).upLoadMultipleArticles(context);
+              await Provider.of<WritersModel>(context, listen: false).upLoadMultipleArticles(context,'writers');
 
 
             }),
