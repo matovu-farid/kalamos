@@ -1,7 +1,6 @@
 import 'package:articlemodel/articlemodel.dart';
 import 'package:articlewidgets/articlewidgets.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/gestures.dart';
 import 'package:profile_page/profile_page.dart';
 
 import 'created_widgets/authenticated.dart';
@@ -9,12 +8,10 @@ import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:profile_page/profile_page.dart';
 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  debugPrintGestureArenaDiagnostics =true;
 
   runApp(MultiProvider(
     providers: [
@@ -40,7 +37,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             return TheApp();
           }
-          return Loading();
+          return LoadingWidget();
         });
   }
 }
@@ -141,7 +138,7 @@ class SomethingWentWrong extends StatelessWidget {
   }
 }
 
-class Loading extends StatelessWidget {
+class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

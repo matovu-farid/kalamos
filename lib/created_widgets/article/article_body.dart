@@ -4,6 +4,7 @@ import 'package:articleclasses/articleclasses.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:writers_app/created_widgets/speach_to_text_widget.dart';
 
 
 import 'package:zefyr/zefyr.dart';
@@ -21,20 +22,6 @@ class WriteArticle extends StatefulWidget {
 class _WriteArticleState extends State<WriteArticle> {
 
 
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _titleController = ZefyrController(loadDocument());
-  //   _bodyController = ZefyrController(loadDocument());
-  //   _titleFocusNode = FocusNode();
-  //   _bodyFocusNode = FocusNode();
-  // }
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //
-  // }
   void _saveDocument(BuildContext context,WritersModel model,ViewModel viewModel) {
 
   final body = viewModel.bodyController.document;
@@ -43,8 +30,6 @@ class _WriteArticleState extends State<WriteArticle> {
     var encordedTitle= jsonEncode(title.toJson());
     var encordedBody= jsonEncode(body.toJson());
     database.saveArticle2(PlainArticle(encordedTitle, encordedBody, 0));
-
-
   }
 
 
@@ -60,12 +45,14 @@ class _WriteArticleState extends State<WriteArticle> {
       child: Stack(
         children: [
           Padding(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(5),
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     ZefyrField(
-                      height: 30,
+                      height: 40,
+                      physics: ClampingScrollPhysics(),
+                      autofocus: false,
                       controller: viewModel.titleController,
                       focusNode: viewModel.titleFocusNode,
                       decoration: InputDecoration(
@@ -90,13 +77,34 @@ class _WriteArticleState extends State<WriteArticle> {
               )),
           Align(
             alignment: Alignment.bottomRight,
-              child: Consumer<WritersModel>(
-                builder:(_,model,child)=> FloatingActionButton(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
 
-                    onPressed: ()=>_saveDocument(context,model,viewModel),
-                  child: Icon(Icons.save),
-                ),
-              ))
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SpeechWidget(),
+                  ),
+                  Consumer<WritersModel>(
+                    builder:(_,model,child)=> FloatingActionButton(
+
+                        onPressed: ()=>_saveDocument(context,model,viewModel),
+                      child: Icon(Icons.save),
+                    ),
+                  ),
+                ],
+              )),
+          Align(
+            alignment: Alignment.center,
+            child: StreamBuilder<String>(
+              stream: audioResultController.stream,
+                builder: (_,snapshot){
+              if(snapshot.connectionState ==ConnectionState.active)
+                return Text(snapshot.data) ;
+              return Text('');
+            }),
+          ),
+
         ],
       ),
     );

@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  loading: ^1.0.2
+  speech_to_text: ^3.2.0
   liquid_pull_to_refresh: ^2.0.0
 #  cloud_firestore: any
 #  flutter_expanded_tile: ^0.2.1
