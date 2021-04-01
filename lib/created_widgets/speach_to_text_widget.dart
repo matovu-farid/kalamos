@@ -1,28 +1,35 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_event.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:quill_delta/quill_delta.dart';
+import 'package:speech_to_text/speech_to_text_provider.dart';
 import 'package:zefyr/zefyr.dart';
 import 'package:notus/notus.dart';
 
 
 
 class SpeechWidget extends StatefulWidget {
+  const SpeechWidget({Key key, @required this.controller}) : super(key: key);
+
   @override
   _SpeechWidgetState createState() => _SpeechWidgetState();
+  final ZefyrController controller;
 }
 
 class _SpeechWidgetState extends State<SpeechWidget> {
   bool _hasSpeech = false;
+  bool listening = false;
   double level = 0.0;
   double minSoundLevel = 50000;
   double maxSoundLevel = -50000;
@@ -43,7 +50,6 @@ class _SpeechWidgetState extends State<SpeechWidget> {
 
   Future<void> initSpeechState() async {
     var hasSpeech = await speech.initialize(
-
         onError: errorListener,
         onStatus: statusListener,
         debugLogging: true,
@@ -57,41 +63,59 @@ class _SpeechWidgetState extends State<SpeechWidget> {
 
     //if (!mounted) return;
 
-
-      _hasSpeech = hasSpeech;
-
+    _hasSpeech = hasSpeech;
   }
+
   Completer completer = Completer();
-  doneListening()async{
+
+  doneListening() async {
     await Future.delayed(listenFor);
     //speech.statusListener();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(FontAwesomeIcons.microphone),
-      onPressed: startListening,
-      // onTapUp: (details)=>speech.isListening ? stopListening : null,
-    );
+    return (listening)
+        ? CustomTap(
+      onTap: (){
+        listening = false;
+        speech.stop();
+      },
+          child: Container(
+              width: 50,
+              height: 50,
+              child: Loading(
+                indicator: BallPulseIndicator(),
+                color: Colors.orange,
+              )),
+        )
+        : FloatingActionButton(
+      heroTag: 'audio',
+            backgroundColor: Colors.white70,
+            child: Icon(FontAwesomeIcons.microphone),
+            onPressed: () {
+
+              setState(() {
+                startListening();
+              });
+            },
+            // onTapUp: (details)=>speech.isListening ? stopListening : null,
+          );
   }
 
   void startListening() {
     lastWords = '';
     lastError = '';
     speech.listen(
-        onResult: resultListener,
-        listenFor: listenFor,
-
-        pauseFor: Duration(seconds: 5),
-        partialResults: false,
-        localeId: _currentLocaleId,
-        onSoundLevelChange: soundLevelListener,
-        cancelOnError: false,
-        listenMode: ListenMode.confirmation,
-
+      onResult: resultListener,
+      listenFor: listenFor,
+      pauseFor: Duration(seconds: 5),
+      partialResults: false,
+      localeId: _currentLocaleId,
+      onSoundLevelChange: soundLevelListener,
+      cancelOnError: false,
+      listenMode: ListenMode.confirmation,
     );
-
   }
 
   void stopListening() {
@@ -108,19 +132,14 @@ class _SpeechWidgetState extends State<SpeechWidget> {
     });
   }
 
-
   void resultListener(SpeechRecognitionResult result) {
     ++resultListened;
     print('Result listener $resultListened');
 
-      lastWords = '${result.recognizedWords}';
-     // audioResultController.sink.add(lastWords);
-       var bodyController = Provider.of<ViewModel>(context,listen: false).bodyController;
-       Delta change = Delta()..push(Operation.insert('$lastWords\n'));
-       bodyController.compose(change);
-
-
-
+    lastWords = '${result.recognizedWords}';
+    // var bodyController = Provider.of<ViewModel>(context,listen: false).bodyController;
+    Delta change = Delta()..push(Operation.insert('$lastWords\n'));
+    widget.controller.compose(change);
   }
 
   void soundLevelListener(double level) {
@@ -140,11 +159,12 @@ class _SpeechWidgetState extends State<SpeechWidget> {
   }
 
   void statusListener(String status) {
-    // print(
-    // 'Received listener status: $status, listening: ${speech.isListening}');
-    setState(() {
-      lastStatus = '$status';
-    });
+    // setState(() {
+    if (status == 'listening')
+      listening = true;
+    else
+      listening = false;
+    // });
   }
 
   void _switchLang(selectedVal) {
@@ -155,4 +175,42 @@ class _SpeechWidgetState extends State<SpeechWidget> {
   }
 }
 
-StreamController<String> audioResultController = StreamController<String>();
+
+
+
+class CustomTap extends StatefulWidget {
+  final Widget child;
+
+  final GestureLongPressCallback onTap;
+
+  const CustomTap({Key key, this.child, this.onTap}) : super(key: key);
+
+  @override
+  _CustomTapState createState() => _CustomTapState();
+}
+
+class _CustomTapState extends State<CustomTap> {
+
+  @override
+  Widget build(BuildContext context) {
+
+    return RawGestureDetector(
+      gestures: {
+
+        AllowTap:GestureRecognizerFactoryWithHandlers<AllowTap>(
+                ()=>AllowTap(),
+                (instance)=>instance.onTap= widget.onTap
+        )
+      },
+      child: widget.child,
+    );
+  }
+}
+class AllowTap extends TapGestureRecognizer{
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
+    super.acceptGesture(pointer);
+  }
+}
+

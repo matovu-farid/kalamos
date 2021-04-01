@@ -75,6 +75,13 @@ class _WriteArticleState extends State<WriteArticle> {
                   ],
                 ),
               )),
+          // Align(
+          //   alignment: Alignment.topRight,
+          //   child: Container(
+          //     height: 40,
+          //       width: 40,
+          //       child: SpeechWidget(controller: Provider.of<ViewModel>(context,listen: false).titleController,)),
+          // ),
           Align(
             alignment: Alignment.bottomRight,
               child: Column(
@@ -83,27 +90,20 @@ class _WriteArticleState extends State<WriteArticle> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SpeechWidget(),
+                    child: SpeechWidget(controller: Provider.of<ViewModel>(context,listen: false).bodyController,),
                   ),
+
+
                   Consumer<WritersModel>(
                     builder:(_,model,child)=> FloatingActionButton(
-
+                      heroTag: 'save article',
                         onPressed: ()=>_saveDocument(context,model,viewModel),
                       child: Icon(Icons.save),
                     ),
                   ),
                 ],
               )),
-          Align(
-            alignment: Alignment.center,
-            child: StreamBuilder<String>(
-              stream: audioResultController.stream,
-                builder: (_,snapshot){
-              if(snapshot.connectionState ==ConnectionState.active)
-                return Text(snapshot.data) ;
-              return Text('');
-            }),
-          ),
+
 
         ],
       ),

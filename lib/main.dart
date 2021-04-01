@@ -1,13 +1,13 @@
 import 'package:articlemodel/articlemodel.dart';
 import 'package:articlewidgets/articlewidgets.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:profile_page/profile_page.dart';
 
 import 'created_widgets/authenticated.dart';
 import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
+
 
 
 void main() {
@@ -74,7 +74,7 @@ class ConstantMaterialApp extends StatelessWidget {
       ),
       routes: {
         '/': (_) => MyHomePage(title: 'Shories'),
-        '/Profile': (_) => ProfilePage(),
+        '/Profile': (_) => Profile(),
       },
     );
   }
