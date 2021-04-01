@@ -75,13 +75,7 @@ class _WriteArticleState extends State<WriteArticle> {
                   ],
                 ),
               )),
-          // Align(
-          //   alignment: Alignment.topRight,
-          //   child: Container(
-          //     height: 40,
-          //       width: 40,
-          //       child: SpeechWidget(controller: Provider.of<ViewModel>(context,listen: false).titleController,)),
-          // ),
+
           Align(
             alignment: Alignment.bottomRight,
               child: Column(
@@ -90,7 +84,7 @@ class _WriteArticleState extends State<WriteArticle> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SpeechWidget(controller: Provider.of<ViewModel>(context,listen: false).bodyController,),
+                    child: SpeechWidget(),
                   ),
 
 

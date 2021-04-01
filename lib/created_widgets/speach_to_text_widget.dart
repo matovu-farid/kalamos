@@ -13,18 +13,16 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:quill_delta/quill_delta.dart';
-import 'package:speech_to_text/speech_to_text_provider.dart';
-import 'package:zefyr/zefyr.dart';
-import 'package:notus/notus.dart';
+import 'package:writers_app/my_extensions.dart';
+
 
 
 
 class SpeechWidget extends StatefulWidget {
-  const SpeechWidget({Key key, @required this.controller}) : super(key: key);
+  const SpeechWidget({Key key, }) : super(key: key);
 
   @override
   _SpeechWidgetState createState() => _SpeechWidgetState();
-  final ZefyrController controller;
 }
 
 class _SpeechWidgetState extends State<SpeechWidget> {
@@ -95,9 +93,9 @@ class _SpeechWidgetState extends State<SpeechWidget> {
             child: Icon(FontAwesomeIcons.microphone),
             onPressed: () {
 
-              setState(() {
+              //setState(() {
                 startListening();
-              });
+             // });
             },
             // onTapUp: (details)=>speech.isListening ? stopListening : null,
           );
@@ -133,13 +131,18 @@ class _SpeechWidgetState extends State<SpeechWidget> {
   }
 
   void resultListener(SpeechRecognitionResult result) {
+    ViewModel model = Provider.of<ViewModel>(context,listen: false);
+    model.setFocus();
     ++resultListened;
     print('Result listener $resultListened');
-
     lastWords = '${result.recognizedWords}';
-    // var bodyController = Provider.of<ViewModel>(context,listen: false).bodyController;
-    Delta change = Delta()..push(Operation.insert('$lastWords\n'));
-    widget.controller.compose(change);
+    Delta change = Delta()..push(Operation.insert('$lastWords\n'));;
+
+    if(model.focus == 'title'){
+      model.titleController.clearDocument();
+    }
+
+    model.controllerWithFocus.compose(change);
   }
 
   void soundLevelListener(double level) {
@@ -152,19 +155,18 @@ class _SpeechWidgetState extends State<SpeechWidget> {
   }
 
   void errorListener(SpeechRecognitionError error) {
-    // print("Received error status: $error, listening: ${speech.isListening}");
-    setState(() {
+
       lastError = '${error.errorMsg} - ${error.permanent}';
-    });
+
   }
 
   void statusListener(String status) {
-    // setState(() {
+     setState(() {
     if (status == 'listening')
       listening = true;
     else
       listening = false;
-    // });
+     });
   }
 
   void _switchLang(selectedVal) {
