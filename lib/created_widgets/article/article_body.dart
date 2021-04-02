@@ -4,6 +4,7 @@ import 'package:articleclasses/articleclasses.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:writers_app/created_widgets/my_image_deleagate.dart';
 import 'package:writers_app/created_widgets/speach_to_text_widget.dart';
 
 
@@ -40,6 +41,7 @@ class _WriteArticleState extends State<WriteArticle> {
     double editorHeight = screenHeight * 0.6;
 
     ViewModel viewModel = Provider.of<ViewModel>(context,listen: false);
+    WritersModel writerModel = Provider.of<WritersModel>(context,listen: false);
 
     return ZefyrScaffold(
       child: Stack(
@@ -62,6 +64,7 @@ class _WriteArticleState extends State<WriteArticle> {
                     ),
                     SizedBox(height: 10,),
                     ZefyrField(
+                      imageDelegate: MyAppZefyrImageDelegate(writerModel),
                       height: editorHeight, // set the editor's height
                       controller: viewModel.bodyController,
                       focusNode: viewModel.bodyFocusNode,
