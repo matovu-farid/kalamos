@@ -5,9 +5,11 @@ import 'package:writers_app/created_widgets/article/bottom_send_buttons.dart';
 import 'package:articlewidgets/articlewidgets.dart';
 import 'package:articlemodel/articlemodel.dart';
 
+
 class Uploaded extends StatelessWidget {
   final color = Colors.blueGrey;
   final textColor = Colors.white70;
+  WriterArticleBloc writerBloc = WriterArticleBloc();
 
   Uploaded({Key key}) : super(key: key);
   List<Widget> listOfTiles;
@@ -17,7 +19,7 @@ class Uploaded extends StatelessWidget {
     return Stack(
       children: [
         CloudList(
-          stream:  Provider.of<WritersModel>(context).fetchFromFirestore().asStream(),
+          stream:  writerBloc.fetchArticleStreamFromFirestore(),
 
         ),
         Align(
