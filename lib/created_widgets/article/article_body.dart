@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:animations/animations.dart';
 import 'package:articleclasses/articleclasses.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:articlewidgets/articlewidgets.dart';
@@ -24,20 +26,7 @@ class WriteArticle extends StatefulWidget {
 class _WriteArticleState extends State<WriteArticle> {
 
 
-  void _saveDocument(BuildContext context,WritersModel model,ViewModel viewModel) {
-    final model = Provider.of<WritersModel>(context,listen: false);
 
-
-  final body = viewModel.bodyController.document;
-  final title = viewModel.titleController.document;
-
-   final database = MyDatabase(model.writerTable, model.writerPic);
-    var encordedTitle= jsonEncode(title.toJson());
-    var encordedBody= jsonEncode(body.toJson());
-    encap(encordedBody);
-    if(title.toPlainText()!=''&&title.toPlainText()!=null)
-    database.saveArticle2(PlainArticle(encordedTitle, encordedBody, 0));
-  }
 
 
 
@@ -93,7 +82,7 @@ class _WriteArticleState extends State<WriteArticle> {
                 children: [
                   FloatingActionButton(
                     heroTag: 'print',
-                    child: Icon(Icons.print),
+                    child: JumpAnimation(child: Icon(Icons.print)),
                     onPressed: ()async{
 
                       var body  = jsonEncode(viewModel.bodyController.document.toJson());
@@ -111,11 +100,9 @@ class _WriteArticleState extends State<WriteArticle> {
 
 
                   Consumer<WritersModel>(
-                    builder:(_,model,child)=> FloatingActionButton(
-                      heroTag: 'save article',
-                        onPressed: ()=>_saveDocument(context,model,viewModel),
-                      child: Icon(Icons.save),
-                    ),
+                    builder:(_,model,child)=>
+                      LocalSaveButton(viewModel: viewModel,writersModel: model,),
+
                   ),
                 ],
               )),
@@ -126,3 +113,62 @@ class _WriteArticleState extends State<WriteArticle> {
     );
   }
 }
+
+class LocalSaveButton extends StatefulWidget {
+  LocalSaveButton({
+    Key key,
+    @required this.viewModel, this.writersModel,
+  }) : super(key: key);
+
+  final ViewModel viewModel;
+  final WritersModel writersModel;
+
+  @override
+  _LocalSaveButtonState createState() => _LocalSaveButtonState();
+}
+
+class _LocalSaveButtonState extends State<LocalSaveButton> with SingleTickerProviderStateMixin{
+  void _saveDocument(BuildContext context,WritersModel model,ViewModel viewModel) {
+    final model = Provider.of<WritersModel>(context,listen: false);
+
+
+    final body = viewModel.bodyController.document;
+    final title = viewModel.titleController.document;
+
+    final database = MyDatabase(model.writerTable, model.writerPic);
+    var encordedTitle= jsonEncode(title.toJson());
+    var encordedBody= jsonEncode(body.toJson());
+    encap(encordedBody);
+    if(title.toPlainText()!=''&&title.toPlainText()!=null)
+      database.saveArticle2(PlainArticle(encordedTitle, encordedBody, 0));
+  }
+  AnimationController _animationController;
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(vsync: this,duration: Duration(seconds: 2));
+
+  }
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopAnimation(
+      animationController: _animationController,
+      child: FloatingActionButton(
+        heroTag: 'save article',
+          onPressed: (){
+            _saveDocument(context,widget.writersModel,widget.viewModel);
+            _animationController.forward();
+          },
+        child: JumpAnimation(child: Icon(Icons.save)),
+      ),
+    );
+  }
+}
+
+

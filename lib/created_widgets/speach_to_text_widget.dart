@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -90,7 +91,7 @@ class _SpeechWidgetState extends State<SpeechWidget> {
         : FloatingActionButton(
       heroTag: 'audio',
             backgroundColor: Colors.white70,
-            child: Icon(FontAwesomeIcons.microphone),
+            child: JumpAnimation(child: Icon(FontAwesomeIcons.microphone)),
             onPressed: () {
 
               //setState(() {

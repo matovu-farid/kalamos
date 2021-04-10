@@ -39,6 +39,8 @@ dependencies:
   toast: ^0.1.5
 #  articlemodel:
 #    path: ../articlemodel
+  animations:
+    path: ../shared_lib/animations
   profile_page:
     path: ../shared_article_packages/profile_page
   articleclasses:

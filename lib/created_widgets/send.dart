@@ -9,7 +9,6 @@ import 'package:articlemodel/articlemodel.dart';
 class Uploaded extends StatelessWidget {
   final color = Colors.blueGrey;
   final textColor = Colors.white70;
-  WriterArticleBloc writerBloc = WriterArticleBloc();
 
   Uploaded({Key key}) : super(key: key);
   List<Widget> listOfTiles;
@@ -18,13 +17,10 @@ class Uploaded extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CloudList(
-          stream:  writerBloc.fetchArticleStreamFromFirestore(),
-
-        ),
+        CloudList(),
         Align(
           alignment: Alignment.bottomRight,
-            child: DeleteButton(type: 'cloud',))
+            child: DeleteButton())
       ],
     );
   }

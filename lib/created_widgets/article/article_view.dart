@@ -14,23 +14,39 @@ class ViewArticlesPage extends StatefulWidget {
 class _ViewArticlesPageState extends State<ViewArticlesPage> {
   //List<Widget> listOfTiles = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
      final model = Provider.of<WritersModel>(context);
     MyDatabase db = MyDatabase(model.writerTable, model.writerPic);
+    model.initViewBloc();
+
 
     return Stack(
       children: [
 
-        ViewArticles(
-          db.readAllData()
+        StreamBuilder(
+          stream: model.viewBloc.stream(),
+          builder: (context, snapshot) {
+              return ViewArticles(
+              db.readAllData()
+            );
+          }
         ),
         Container(
           width: MediaQuery.of(context).size.width,
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: BottomSendButtons(type:'local'),
+            child: BottomSendButtons(),
           ),
         )
       ],

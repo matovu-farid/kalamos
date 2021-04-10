@@ -15,6 +15,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.40.6"
+  animated_stream_list:
+    dependency: transitive
+    description:
+      name: animated_stream_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  animations:
+    dependency: "direct main"
+    description:
+      path: "../shared_lib/animations"
+      relative: true
+    source: path
+    version: "0.0.1"
   archive:
     dependency: transitive
     description:
@@ -604,6 +618,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.10"
+  material_floating_search_bar:
+    dependency: transitive
+    description:
+      name: material_floating_search_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.3"
   meta:
     dependency: transitive
     description:
