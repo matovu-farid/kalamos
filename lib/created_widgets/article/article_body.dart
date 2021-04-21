@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:writers_app/created_widgets/speach_to_text_widget.dart';
 import 'package:shared_widgets/shared_widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 import 'package:zefyr/zefyr.dart';
@@ -38,81 +39,90 @@ class _WriteArticleState extends State<WriteArticle> {
     ViewModel viewModel = Provider.of<ViewModel>(context,listen: false);
     WritersModel writerModel = Provider.of<WritersModel>(context,listen: false);
 
-    return ZefyrScaffold(
-      child: Stack(
-        children: [
-          Padding(
-              padding: EdgeInsets.all(5),
-              child: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+
+      body: ZefyrScaffold(
+        child: Stack(
+          children: [
+            Padding(
+                padding: EdgeInsets.all(5),
+                child: SingleChildScrollView(
+                  child: Consumer<WritersModel>(
+                    builder: (context,model,child) {
+                      return ZefyrTheme(
+                        data: ZefyrThemeData.fallback(context).copyWith(
+                            defaultLineTheme: LineTheme(
+                              textStyle: model.style,
+                              padding: EdgeInsets.all(5),
+                            )
+
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ZefyrField(
+
+                              height: 40,
+                              physics: ClampingScrollPhysics(),
+                              autofocus: false,
+                              controller: viewModel.titleController,
+                              focusNode: viewModel.titleFocusNode,
+                              decoration: InputDecoration(
+                                hintText: 'Enter Title Here...',
+
+
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            ZefyrField(
+
+                              imageDelegate: MyAppZefyrImageDelegate(),
+                              height: editorHeight, // set the editor's height
+                              controller: viewModel.bodyController,
+                              focusNode: viewModel.bodyFocusNode,
+                              autofocus: false,
+                              decoration: InputDecoration(
+                                hintText: 'Enter body Here...',
+                              ),
+                              physics: ClampingScrollPhysics(),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  ),
+                )),
+
+            Align(
+              alignment: Alignment.bottomRight,
                 child: Column(
-                  children: <Widget>[
-                    ZefyrField(
-                      height: 40,
-                      physics: ClampingScrollPhysics(),
-                      autofocus: false,
-                      controller: viewModel.titleController,
-                      focusNode: viewModel.titleFocusNode,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Title Here...',
+                  mainAxisSize: MainAxisSize.min,
 
-                      ),
+                  children: [
+                    ChangeFonts(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SpeechWidget(),
                     ),
-                    SizedBox(height: 10,),
-                    ZefyrField(
-                      imageDelegate: MyAppZefyrImageDelegate(),
-                      height: editorHeight, // set the editor's height
-                      controller: viewModel.bodyController,
-                      focusNode: viewModel.bodyFocusNode,
-                      autofocus: false,
-                      decoration: InputDecoration(
-                        hintText: 'Enter body Here...',
 
-                      ),
-                      physics: ClampingScrollPhysics(),
-                    )
+
+                    Consumer<WritersModel>(
+                      builder:(_,model,child)=>
+                        LocalSaveButton(viewModel: viewModel,writersModel: model,),
+
+                    ),
                   ],
-                ),
-              )),
-
-          Align(
-            alignment: Alignment.bottomRight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'print',
-                    child: JumpAnimation(child: Icon(Icons.print)),
-                    onPressed: ()async{
-
-                      var body  = jsonEncode(viewModel.bodyController.document.toJson());
-
-                      //print(body);
-                      // _saveDocument(context, writerModel, viewModel);
-                      List<Map> data  = await MyDatabase(writerModel.writerTable, writerModel.writerPic).readAllData();
-                      print(data);
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SpeechWidget(),
-                  ),
+                )),
 
 
-                  Consumer<WritersModel>(
-                    builder:(_,model,child)=>
-                      LocalSaveButton(viewModel: viewModel,writersModel: model,),
-
-                  ),
-                ],
-              )),
-
-
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+
 
 class LocalSaveButton extends StatefulWidget {
   LocalSaveButton({

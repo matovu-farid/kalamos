@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:writers_app/created_widgets/article/bottom_send_buttons.dart';
 import 'package:articlewidgets/articlewidgets.dart';
 import 'package:articlemodel/articlemodel.dart';
+import 'package:writers_app/created_widgets/uploaded_list.dart';
 
 
 class Uploaded extends StatelessWidget {

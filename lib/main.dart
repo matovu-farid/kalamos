@@ -1,14 +1,14 @@
+import 'package:article_themedata/article_themedata.dart';
+import 'package:firebase_wrapper/firebase_wrapper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:writers_app/tab_views.dart';
 import 'package:articlemodel/articlemodel.dart';
 import 'package:articlewidgets/articlewidgets.dart';
-import 'package:firebase_core/firebase_core.dart';
-
-import 'created_widgets/authenticated.dart';
-import 'package:writers_app/created_widgets/unauthenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:lit_firebase_auth/lit_firebase_auth.dart';
 import 'package:provider/provider.dart';
-
-
+import 'package:zefyr/zefyr.dart';
+import 'package:articleclasses/articleclasses.dart' as ac;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,26 +19,16 @@ void main() {
       ChangeNotifierProvider<ViewModel>(create: (_) => ViewModel()),
     ],
     child: MyApp(),
-
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  // final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _initialization,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return SomethingWentWrong();
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return TheApp();
-          }
-          return LoadingWidget();
-        });
+    //Provider.of<WritersModel>(context, listen: false).initApp(ac.App.Writer);
+    return FirebaseWrapper(child: TheApp());
   }
 }
 
@@ -49,8 +39,9 @@ class TheApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<WritersModel>(context, listen: false).initApp(ac.App.Writer);
     return LitAuthInit(
-      authProviders: AuthProviders(google: true,emailAndPassword:false),
+      authProviders: AuthProviders(google: true, emailAndPassword: false),
       child: LayoutBuilder(builder: (context, constraints) {
         //if(constraints.maxHeight>900) return RotatedBox(quarterTurns: 1,child: ConstantMaterialApp());
         //else
@@ -67,15 +58,14 @@ class ConstantMaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ZefyrScaffold(
+      child: MaterialApp(
+        theme: buildArticlesThemeData(context),
+        routes: {
+          '/': (_) => MyHomePage(title: 'Shories'),
+          '/Profile': (_) => Profile(),
+        },
       ),
-      routes: {
-        '/': (_) => MyHomePage(title: 'Shories'),
-        '/Profile': (_) => Profile(),
-      },
     );
   }
 }
@@ -90,42 +80,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String firstTimeKey = 'first time';
+  bool isFirstTime = false;
+
+  Future<void> getIsFirstTime() async {
+    var prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(firstTimeKey)) {
+      isFirstTime= true;
+      prefs.setBool(firstTimeKey,false);
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    final maxLines = 25;
+    return FutureBuilder<void>(
+        future: getIsFirstTime(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.done)
 
 
-    return DefaultTabController(
+            if(isFirstTime) {
 
-      length: 3,
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-            bottom: TabBar(tabs: [
-              Tab(
-                child: Text('Write'),
-              ),
-              Tab(
-                child: Text('View'),
-              ),
-              Tab(
-                child: Text('Uploaded'),
-              ),
-              // Tab(child:Text('Profile'))
-            ]),
-          ),
-          drawer: MyDrawer(),
-          body: LitAuthState(
-            authenticated: Authenticated(
-              width: width,
-              height: height,
-              maxLines: maxLines,
-            ),
-            unauthenticated: Unauthenticated(),
-          )),
+              return SetupPage(
+                switchCallBack: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabViews()));
+                },
+              );
+            }
+          return TabViews();
+
+        }
     );
+
+
   }
 }
 

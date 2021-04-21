@@ -17,13 +17,22 @@ class _BottomSendButtonsState extends State<BottomSendButtons> {
   @override
   Widget build(BuildContext context) {
     var bloc  = Provider.of<WritersModel>(context,listen: false).viewBloc;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
 
-          UploadButton(bloc:bloc),
-        DeleteButton(bloc:bloc),
-      ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: UploadButton(bloc:bloc),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DeleteButton(bloc:bloc),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -63,6 +72,7 @@ class _UploadButtonState extends State<UploadButton> with SingleTickerProviderSt
       animationController: _animationController,
       child: ViewButton(
         text: 'Upload',
+        icon: Icon(Icons.upload_outlined),
         onPressed:(){
           _animationController.reset();
           _animationController.forward();
@@ -111,6 +121,7 @@ class _DeleteButtonState extends State<DeleteButton> with SingleTickerProviderSt
       animationController: _controller,
       child: ViewButton(
           text: 'Delete',
+          icon: Icon(Icons.delete),
           onPressed: (){
             if(index ==1)
             widget.bloc.deleteFromCache();
@@ -127,15 +138,16 @@ class _DeleteButtonState extends State<DeleteButton> with SingleTickerProviderSt
 class ViewButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final Widget icon;
   const ViewButton({
     Key key,
     this.text,
-    this.onPressed,
+    this.onPressed, this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-        heroTag: 'View$text', onPressed: onPressed, label: Text(text));
+        heroTag: 'View$text', onPressed: onPressed, label: icon);
   }
 }

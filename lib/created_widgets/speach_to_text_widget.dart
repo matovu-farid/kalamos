@@ -90,7 +90,6 @@ class _SpeechWidgetState extends State<SpeechWidget> {
         )
         : FloatingActionButton(
       heroTag: 'audio',
-            backgroundColor: Colors.white70,
             child: JumpAnimation(child: Icon(FontAwesomeIcons.microphone)),
             onPressed: () {
 
