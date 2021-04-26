@@ -87,7 +87,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 flutter_native_splash:
   color: "#4e342e"
-  image: assets/splash.png
+  image: assets/light-coffee.png
   fill: true
 
   #web: false

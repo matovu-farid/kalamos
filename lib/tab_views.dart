@@ -50,7 +50,7 @@ class TabViews extends StatelessWidget {
               constraints: BoxConstraints.expand(),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/coffee-min.jpg'),
+                    image: AssetImage('assets/dark-coffee.jpg'),
                     fit: BoxFit.cover),
               ),
               child: LitAuthState(

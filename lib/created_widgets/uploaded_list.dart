@@ -7,12 +7,12 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider/provider.dart';
 import 'package:zefyr/zefyr.dart';
 class CloudList extends StatefulWidget {
-  final bool isFromReder;
-  CloudList({Key key, this.isFromReder}) : super(key: key);
+  CloudList({Key key}) : super(key: key);
 
   @override
   _CloudListState createState() => _CloudListState();
 }
+
 
 class _CloudListState extends State<CloudList> {
   //List<Widget> listOfTiles=[];
@@ -20,15 +20,10 @@ class _CloudListState extends State<CloudList> {
     return SizeTransition(
       axis: Axis.vertical,
       sizeFactor: animation,
-      child: TapCustomDetector(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (_)=>StoryView(orginalArticle: article)));
-        },
-        child: MyListTile(
-
-          isFromReader: false,
-          originalArticle: article,),
-      ),
+      child: MyListTile(
+        tab:WriterTab.upload,
+        isFromReader: false,
+        originalArticle: article,),
     );
   }
 
