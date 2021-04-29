@@ -65,9 +65,13 @@ dependencies:
 #    #image: assets/splash.png
 
 dev_dependencies:
+  flutter_launcher_name:
   test: ^1.15.7
   flutter_test:
     sdk: flutter
+
+flutter_launcher_name:
+  name: "Writaz"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -46,10 +46,30 @@ class _CloudListState extends State<CloudList> {
     model.initCloudBloc();
     return Center(
         child: ZefyrScaffold(
-          child: AnimatedStreamList<OriginalArticle>(
-            itemRemovedBuilder:itembuilder,
-            streamList:  stream,
-            itemBuilder: itembuilder,
+          // child: AnimatedStreamList<OriginalArticle>(
+          //   itemRemovedBuilder:itembuilder,
+          //   streamList:  stream,
+          //   itemBuilder: itembuilder,
+          // ),
+          child: StreamBuilder<List<OriginalArticle>>(
+            stream: stream,
+            builder: (context, snapshot) {
+              if(snapshot.hasData)
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                  itemBuilder: (_,index){
+                var article = snapshot.data[index];
+
+                return MyListTile(
+
+                tab:WriterTab.upload,
+                isFromReader: false,
+                originalArticle: article,);
+
+              });
+              return Container();
+            }
+
           ),
         ));
   }
